@@ -36,3 +36,7 @@ next-env.d.ts
 
 # pycache
 *.pyc
+
+# local testing
+/public/documents/
+/public/output/
