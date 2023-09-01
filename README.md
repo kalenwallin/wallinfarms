@@ -5,13 +5,13 @@
   </a>
 </p>
 
-<p align="center">Simple Next.js boilerplate that uses <a href="https://fastapi.tiangolo.com/">FastAPI</a> as the API backend.</p>
+<p align="center">A website to generate corn harvest reports.</p>
 
 <br/>
 
 ## Introduction
 
-This is a hybrid Next.js + Python app that uses Next.js as the front end and FastAPI as the API backend allowing me to write Next.js apps that use Python AI libraries on the backend.
+This is a hybrid Next.js + Python app that uses Next.js as the front end and FastAPI as the API backend allowing the use of Python libraries on the backend.
 
 ## How It Works
 
