@@ -1,13 +1,17 @@
+import base64
+import json
 import os
-import sys
 
-from api.classes import process_image_as_corn_ticket
-from api.excel_utils import write_sheet
-from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi import FastAPI, Request
 from google.cloud import vision
 from openpyxl import Workbook
 
+from api.classes import process_image_as_corn_ticket
+from api.excel_utils import write_sheet
+
 app = FastAPI()
+load_dotenv(dotenv_path='.env.local')
 
 
 @app.get("/api/python")
@@ -16,13 +20,20 @@ def hello_world():
 
 
 @app.get("/api/python/autocornticket")
-def autocornticket():
-    # Instantiate a Vision client
-    client = vision.ImageAnnotatorClient()
+def autocornticket(request: Request):
+    credential_str = os.getenv('GOOGLE_SERVICE_KEY')
+    credential = json.loads(base64.b64decode(credential_str))
 
-    image_dir = sys.argv[1] if len(sys.argv) > 1 else "documents/fvc/52021"
-    location = sys.argv[2] if len(sys.argv) > 2 else ""
-    field = sys.argv[3] if len(sys.argv) > 3 else ""
+    client = vision.ImageAnnotatorClient(
+        credentials={
+            'client_email': credential['client_email'],
+            'private_key': credential['private_key']
+        }
+    )
+
+    image_dir = request.query_params.get('image_dir', 'public/documents/fvc/52021')
+    location = request.query_params.get('location', '')
+    field = request.query_params.get('field', '')
 
     tickets = []
 
