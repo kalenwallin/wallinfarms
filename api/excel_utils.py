@@ -1,7 +1,8 @@
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
-from classes import (generate_mock_tickets, generate_random_feedlot_name,
-                     generate_random_field_number)
+
+from api.classes import (generate_mock_tickets, generate_random_feedlot_name,
+                         generate_random_field_number)
 
 
 def write_header(worksheet, location="", field=""):
