@@ -5,7 +5,7 @@
   </a>
 </p>
 
-<p align="center">A website to generate corn harvest reports.</p>
+<p align="center">A website to generate corn harvest reports and manage inventory.</p>
 
 <br/>
 
