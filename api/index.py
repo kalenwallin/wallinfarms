@@ -12,8 +12,8 @@ from api.classes import process_image_as_corn_ticket
 from api.excel_utils import write_sheet
 
 app = FastAPI()
-load_dotenv(dotenv_path='.env.local')
-google_service_key = os.getenv('GOOGLE_SERVICE_KEY')
+load_dotenv(dotenv_path=".env.local")
+google_service_key = os.getenv("GOOGLE_SERVICE_KEY")
 credential_str = base64.b64decode(google_service_key)
 credential_dict = json.loads(credential_str)
 credentials = service_account.Credentials.from_service_account_info(credential_dict)
@@ -26,12 +26,11 @@ def hello_world():
 
 @app.get("/api/python/autocornticket")
 def autocornticket(request: Request):
-
     client = vision.ImageAnnotatorClient(credentials=credentials)
 
-    image_dir = request.query_params.get('image_dir', 'public/documents/fvc/52021')
-    location = request.query_params.get('location', '')
-    field = request.query_params.get('field', '')
+    image_dir = request.query_params.get("image_dir", "public/documents/fvc/52021")
+    location = request.query_params.get("location", "")
+    field = request.query_params.get("field", "")
 
     tickets = []
 
@@ -53,4 +52,4 @@ def autocornticket(request: Request):
 
     # Save the workbook
     wb.save("public/output/output.xlsx")
-    return {"message": "Hello World"}
+    return {"message": "Success"}
