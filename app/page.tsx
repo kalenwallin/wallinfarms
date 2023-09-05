@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const VIDEO_URL = "https://i.kalenwallin.com/file/portfoliov2/sharex/hero.mp4";

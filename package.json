@@ -1,6 +1,6 @@
 {
-    "name": "nextjs-fastapi",
-    "version": "0.1.0",
+    "name": "wallinfarms",
+    "version": "0.1.1",
     "private": true,
     "scripts": {
         "fastapi-dev": "pip install -r requirements.txt && python -m uvicorn api.index:app --reload",
