@@ -40,3 +40,6 @@ next-env.d.ts
 # local testing
 /public/documents/
 /public/output/
+
+# python venv
+env
