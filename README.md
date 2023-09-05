@@ -23,14 +23,12 @@ On localhost, the rewrite will be made to the `127.0.0.1:8000` port, which is wh
 
 In production, the FastAPI server is hosted as [Python serverless functions](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python) on Vercel.
 
-## Demo
-
-Todo
-
 ## Developing Locally
 
 You can clone & create this repo with the following command
-Todo
+```bash
+git clone https://github.com/kalenwallin/wallinfarms
+```
 
 ## Getting Started
 
