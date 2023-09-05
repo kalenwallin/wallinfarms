@@ -17,8 +17,26 @@ export default function Home() {
                 poster={FALLBACK}
                 id="bgvid"
             >
+                <source src="polina.webm" type="video/webm" />
                 <source src={VIDEO_URL} type="video/mp4" />
             </video>
+            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-8 text-center">
+                <div>
+                    <h1 className="text-5xl text-clampH1 font-bold text-white">
+                        Wallin Farms
+                    </h1>
+                    <h2 className="text-3xl text-clampH2 text-gray-300">
+                        Imperial, NE
+                    </h2>
+                </div>
+                <Link
+                    className="px-6 py-3 font-bold text-white bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
+                    href="/login"
+                >
+                    Sign in
+                </Link>
+            </div>
         </main>
     );
 }
