@@ -1,8 +1,6 @@
 import base64
 import json
-import logging
 import os
-import tempfile
 from typing import List
 
 from dotenv import load_dotenv
@@ -25,26 +23,6 @@ credential_str = base64.b64decode(google_service_key)
 credential_dict = json.loads(credential_str)
 credentials = service_account.Credentials.from_service_account_info(credential_dict)
 
-# Create a custom logger
-logger = logging.getLogger(__name__)
-
-# Set the level of this logger. This could also be set in a configuration file or environment variable.
-logger.setLevel(logging.DEBUG)
-
-# Create handlers
-c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler("file.log")
-
-# Create formatters and add it to handlers
-c_format = logging.Formatter("%(name)s - %(levelname)s - %(message)s")
-f_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-c_handler.setFormatter(c_format)
-f_handler.setFormatter(f_format)
-
-# Add handlers to the logger
-logger.addHandler(c_handler)
-logger.addHandler(f_handler)
-
 
 class ImageUpload(BaseModel):
     location: str
@@ -60,25 +38,11 @@ async def autocornticket(upload: ImageUpload):
 
     # Iterate through uploaded images
     for file in upload.files:
-        logger.info(f"Processing file: {file.filename}")
-        print(f"Processing file: {file.filename}")
         contents = await file.read()
-        image_path = os.path.join(tempfile.gettempdir(), file.filename)
         try:
-            with open(image_path, "wb") as f:
-                f.write(contents)
-        except Exception as e:
-            logger.exception("Error saving uploaded file.", exc_info=True)
-            raise HTTPException(
-                status_code=500, detail="Error saving uploaded file."
-            ) from e
-
-        try:
-            corn_ticket = process_image_as_corn_ticket(client, image_path)
+            corn_ticket = process_image_as_corn_ticket(client, contents)
             tickets.append(corn_ticket)
         except Exception as e:
-            logger.exception("Error processing image.", exc_info=True)
-            print("Error processing image.")
             raise HTTPException(
                 status_code=500, detail="Error processing image."
             ) from e
