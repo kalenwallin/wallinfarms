@@ -143,12 +143,12 @@ def generate_mock_tickets(num_tickets=2):
     return [generate_mock_ticket() for _ in range(num_tickets)]
 
 
-def process_image_as_corn_ticket(client, image_path):
+def process_image_as_corn_ticket(client, image_contents):
     """Detects text as a CornTicket in an image."""
-    with open(image_path, "rb") as image_file:
-        content = image_file.read()
+    # with open(image_path, "rb") as image_file:
+    #     content = image_file.read()
 
-    image = vision.Image(content=content)
+    image = vision.Image(content=image_contents)
 
     response = client.text_detection(image=image)
     texts = response.text_annotations
