@@ -2,7 +2,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { AxiosProgressEvent } from "axios";
-import { LinearProgress } from "@material-ui/core";
 
 export default function Home() {
     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
@@ -100,9 +99,7 @@ export default function Home() {
                 <h1 className="text-5xl text-clampH1 font-bold text-white">
                     ScaleSnap
                 </h1>
-                <h2 className="text-2xl text-clampH2 text-gray-300">
-                    Available soon
-                </h2>
+                <h2 className="text text-gray-300">Under development</h2>
                 <div className="flex flex-col">
                     <label className="text-left ml-4" htmlFor="tickets">
                         Upload Tickets:
@@ -120,7 +117,7 @@ export default function Home() {
                     <input
                         className="m-4"
                         type="text"
-                        placeholder="Location"
+                        placeholder="Sale Location"
                         name="location"
                         value={location}
                         onChange={onLocationChange}
@@ -138,7 +135,7 @@ export default function Home() {
                     />
                     <button onClick={fileUploadHandler}>Upload</button>
                     <div>
-                        {uploadPercentage < 0 ? (
+                        {/* {uploadPercentage < 0 ? (
                             <LinearProgress variant="indeterminate" />
                         ) : uploadPercentage < 100 ? (
                             <>
@@ -150,7 +147,7 @@ export default function Home() {
                             </>
                         ) : (
                             <div>Upload complete!</div>
-                        )}
+                        )} */}
                     </div>
                     {fileUrl && (
                         <a href={fileUrl} download>
