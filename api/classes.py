@@ -17,6 +17,7 @@ class CornTicket:
         driver="",
         truck="",
         sale_location="",
+        field_number="",
     ):
         self.date = date
         self.ticket = ticket
@@ -34,13 +35,14 @@ class CornTicket:
         self.driver = driver
         self.truck = truck
         self.sale_location = sale_location
+        self.field_number = field_number
 
     def __str__(self):
         return (
-            f"CornTicket({self.date}, {self.location}, {self.ticket}, "
+            f"CornTicket({self.date}, {self.sale_location}, {self.ticket}, "
             f"gross={self.gross}, tare={self.tare}, "
             f"mo={self.mo}, tw={self.tw}, "
-            f"driver={self.driver}, truck={self.truck})"
+            f"driver={self.driver}, truck={self.truck}, field_number={self.field_number})"
         )
 
 
