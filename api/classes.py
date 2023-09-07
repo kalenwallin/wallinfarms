@@ -6,7 +6,18 @@ from google.cloud import vision
 
 
 class CornTicket:
-    def __init__(self, date, ticket, gross=0, tare=0, mo=0, tw=0, driver="", truck=""):
+    def __init__(
+        self,
+        date,
+        ticket,
+        gross=0,
+        tare=0,
+        mo=0,
+        tw=0,
+        driver="",
+        truck="",
+        location="",
+    ):
         self.date = date
         self.ticket = ticket
         self.gross = gross
@@ -22,10 +33,11 @@ class CornTicket:
         )
         self.driver = driver
         self.truck = truck
+        self.location = location
 
     def __str__(self):
         return (
-            f"CornTicket({self.date}, {self.ticket}, "
+            f"CornTicket({self.date}, {self.location}, {self.ticket}, "
             f"gross={self.gross}, tare={self.tare}, "
             f"mo={self.mo}, tw={self.tw}, "
             f"driver={self.driver}, truck={self.truck})"
@@ -143,10 +155,15 @@ def generate_mock_tickets(num_tickets=2):
     return [generate_mock_ticket() for _ in range(num_tickets)]
 
 
-def process_image_as_corn_ticket(client, image_contents):
+def process_image_as_corn_ticket(client, image_binary=None, image_path=None):
     """Detects text as a CornTicket in an image."""
-    # with open(image_path, "rb") as image_file:
-    #     content = image_file.read()
+    if image_path:
+        with open(image_path, "rb") as image_file:
+            image_contents = image_file.read()
+    elif image_binary:
+        image_contents = image_binary
+    else:
+        raise Exception("Must provide image_path or image_binary")
 
     image = vision.Image(content=image_contents)
 
@@ -206,5 +223,6 @@ def process_image_as_corn_ticket(client, image_contents):
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
     corn_ticket = CornTicket(date, ticket, gross, tare, mo, tw)
+    # TODO: save corn ticket to the database
     print(corn_ticket)
     return corn_ticket
