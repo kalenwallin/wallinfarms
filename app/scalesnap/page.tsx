@@ -44,6 +44,7 @@ export default function Home() {
 
         formData.append("location", location);
         formData.append("field", field);
+        console.log(formData);
 
         const config = {
             onUploadProgress: (progressEvent: AxiosProgressEvent) => {
@@ -64,10 +65,11 @@ export default function Home() {
 
         try {
             const response = await axios.post(
-                "/api/python/autocornticket",
+                "/api/python/scalesnap",
                 formData,
                 config
             );
+            console.log(response);
             setFileUrl(`/download/${response.data.fileUrl}`);
         } catch (error) {
             if (error instanceof Error) {
@@ -93,41 +95,70 @@ export default function Home() {
     };
 
     return (
-        <div>
-            <input type="file" multiple onChange={fileSelectedHandler} />
-            <input
-                type="text"
-                placeholder="Location"
-                value={location}
-                onChange={onLocationChange}
-            />
-            <input
-                type="text"
-                placeholder="Field"
-                value={field}
-                onChange={onFieldChange}
-            />
-            <button onClick={fileUploadHandler}>Upload</button>
-            <div>
-                {uploadPercentage < 0 ? (
-                    <LinearProgress variant="indeterminate" />
-                ) : uploadPercentage < 100 ? (
-                    <>
-                        <div>{uploadPercentage}%</div>
-                        <LinearProgress
-                            variant="determinate"
-                            value={uploadPercentage}
-                        />
-                    </>
-                ) : (
-                    <div>Upload complete!</div>
-                )}
+        <main className="relative h-screen">
+            <div className="relative flex flex-col items-center justify-center h-full space-y-8 text-center">
+                <h1 className="text-5xl text-clampH1 font-bold text-white">
+                    ScaleSnap
+                </h1>
+                <h2 className="text-2xl text-clampH2 text-gray-300">
+                    Available soon
+                </h2>
+                <div className="flex flex-col">
+                    <label className="text-left ml-4" htmlFor="tickets">
+                        Upload Tickets:
+                    </label>
+                    <input
+                        className="m-4"
+                        type="file"
+                        name="tickets"
+                        multiple
+                        onChange={fileSelectedHandler}
+                    />
+                    <label className="text-left ml-4" htmlFor="location">
+                        Sale Location:
+                    </label>
+                    <input
+                        className="m-4"
+                        type="text"
+                        placeholder="Location"
+                        name="location"
+                        value={location}
+                        onChange={onLocationChange}
+                    />
+                    <label className="text-left ml-4" htmlFor="field">
+                        Field Number:
+                    </label>
+                    <input
+                        className="m-4"
+                        type="text"
+                        placeholder="Field"
+                        name="field"
+                        value={field}
+                        onChange={onFieldChange}
+                    />
+                    <button onClick={fileUploadHandler}>Upload</button>
+                    <div>
+                        {uploadPercentage < 0 ? (
+                            <LinearProgress variant="indeterminate" />
+                        ) : uploadPercentage < 100 ? (
+                            <>
+                                <div>{uploadPercentage}%</div>
+                                <LinearProgress
+                                    variant="determinate"
+                                    value={uploadPercentage}
+                                />
+                            </>
+                        ) : (
+                            <div>Upload complete!</div>
+                        )}
+                    </div>
+                    {fileUrl && (
+                        <a href={fileUrl} download>
+                            Download Excel
+                        </a>
+                    )}
+                </div>
             </div>
-            {fileUrl && (
-                <a href={fileUrl} download>
-                    Download Excel
-                </a>
-            )}
-        </div>
+        </main>
     );
 }
