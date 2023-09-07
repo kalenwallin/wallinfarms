@@ -18,21 +18,21 @@ app = FastAPI()
 
 # Load environment variables
 load_dotenv(dotenv_path=".env.local")
-google_service_key = os.getenv("GOOGLE_SERVICE_KEY")
-credential_str = base64.b64decode(google_service_key)
-credential_dict = json.loads(credential_str)
-credentials = service_account.Credentials.from_service_account_info(credential_dict)
+GOOGLE_SERVICE_KEY = os.getenv("GOOGLE_SERVICE_KEY")
+CREDENTIAL_STR = base64.b64decode(GOOGLE_SERVICE_KEY)
+CREDENTIAL_DICT = json.loads(CREDENTIAL_STR)
+CREDENTIALS = service_account.Credentials.from_service_account_info(CREDENTIAL_DICT)
 
 
-class ImageUpload(BaseModel):
+class TicketUpload(BaseModel):
     location: str
     field: str
     files: List[UploadFile] = File(...)
 
 
-@app.post("/api/python/autocornticket")
-async def autocornticket(upload: ImageUpload):
-    client = vision.ImageAnnotatorClient(credentials=credentials)
+@app.post("/api/python/scalesnap")
+async def scalesnap(upload: TicketUpload):
+    client = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
     tickets = []
 
@@ -40,7 +40,7 @@ async def autocornticket(upload: ImageUpload):
     for file in upload.files:
         contents = await file.read()
         try:
-            corn_ticket = process_image_as_corn_ticket(client, contents)
+            corn_ticket = process_image_as_corn_ticket(client, image_binary=contents)
             tickets.append(corn_ticket)
         except Exception as e:
             raise HTTPException(
