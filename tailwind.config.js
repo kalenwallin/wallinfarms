@@ -13,7 +13,7 @@ module.exports = {
                     "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
             fontSize: {
-                clampH1: "clamp(3rem, 5vw, 6rem)",
+                clampH1: "clamp(2.5rem, 5vw, 6rem)",
                 clampH2: "clamp(1.875rem, 4vw, 3rem)",
             },
         },
