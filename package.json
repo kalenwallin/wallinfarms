@@ -13,6 +13,8 @@
     "dependencies": {
         "@ant-design/cssinjs": "^1.17.0",
         "@ant-design/icons": "^5.2.6",
+        "@cloudinary/react": "^1.11.2",
+        "@cloudinary/url-gen": "^1.11.2",
         "@types/node": "20.2.4",
         "@types/react": "18.2.7",
         "@types/react-dom": "18.2.4",

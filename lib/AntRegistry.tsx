@@ -10,7 +10,7 @@ const StyledComponentsRegistry = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const cache = React.useMemo<Entity>(() => createCache(), [createCache]);
+    const cache = React.useMemo<Entity>(() => createCache(), []);
     useServerInsertedHTML(() => (
         <style
             id="antd"

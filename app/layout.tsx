@@ -9,6 +9,12 @@ export const metadata = {
     description: "Harvest reporting and management.",
 };
 
+import { Cloudinary } from "@cloudinary/url-gen";
+
+const App = () => {
+    const cld = new Cloudinary({ cloud: { cloudName: "dab9joh7p" } });
+};
+
 export default function RootLayout({
     children,
 }: {
