@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Button } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 const VIDEO_URL = "https://i.kalenwallin.com/file/portfoliov2/sharex/hero.mp4";
 const FALLBACK =
@@ -29,6 +31,13 @@ export default function Home() {
                         Imperial, NE
                     </h2>
                 </div>
+                <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<ArrowRightOutlined />}
+                >
+                    Sign In
+                </Button>
                 <Link
                     className="px-6 py-3 font-bold text-white bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
                     href="/login"
