@@ -16,7 +16,7 @@ class CornTicket:
         tw=0,
         driver="",
         truck="",
-        location="",
+        sale_location="",
     ):
         self.date = date
         self.ticket = ticket
@@ -33,7 +33,7 @@ class CornTicket:
         )
         self.driver = driver
         self.truck = truck
-        self.location = location
+        self.sale_location = sale_location
 
     def __str__(self):
         return (
