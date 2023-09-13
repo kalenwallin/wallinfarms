@@ -12,8 +12,8 @@ export default function Home() {
                     <h1 className="text-5xl text-clampH1 font-bold text-white">
                         CropCache
                     </h1>
-                    <h2 className="text-2xl text-clampH2 text-gray-300">
-                        Available soon
+                    <h2 className="text-2xl text-clampH2 m-8 text-gray-300">
+                        Coming soon
                     </h2>
                 </div>
             </div>
