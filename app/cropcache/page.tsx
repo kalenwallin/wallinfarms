@@ -1,4 +1,5 @@
 import ComingSoon from "../components/comingSoon";
+import { theme } from "../config";
 
 export const CROP_CACHE_PROPS: {
     IMAGE_PATH: string;
@@ -7,7 +8,7 @@ export const CROP_CACHE_PROPS: {
     SLUG: string;
     IMAGE_WIDTH: string;
 } = {
-    IMAGE_PATH: "/amoled/cc-icon.svg",
+    IMAGE_PATH: `/${theme}/cc-icon.svg`,
     LINE_ONE: "CROP",
     LINE_TWO: "CACHE",
     SLUG: "/home",
