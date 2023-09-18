@@ -26,7 +26,7 @@ export default function ComingSoon(props: {
                 <h1 className="text-5xl text-clampH1 font-black text-secondary">
                     {props.line_two}
                 </h1>
-                <p className="text-base m-2 text-primary">COMING SOON</p>;
+                <p className="text-base m-2 text-primary">COMING SOON</p>
             </div>
         </div>
     );
