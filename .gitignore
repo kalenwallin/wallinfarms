@@ -47,3 +47,4 @@ env
 # vscode
 .vscode
 file.log
+*.Identifier
