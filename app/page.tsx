@@ -41,9 +41,6 @@ export default function Home() {
                     <h1 className="text-center text-5xl text-clampH1 font-black text-darkAlternate">
                         FARMS
                     </h1>
-                    {/* <h2 className="text-2xl text-clampH2 m-4 text-gray-300">
-                        Imperial, NE
-                    </h2> */}
                 </div>
 
                 <Link
