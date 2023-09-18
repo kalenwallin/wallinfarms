@@ -16,6 +16,12 @@ module.exports = {
                 clampH1: "clamp(2.5rem, 5vw, 6rem)",
                 clampH2: "clamp(1.875rem, 4vw, 3rem)",
             },
+            colors: {
+                darkPrimary: "#D9D9D9",
+                darkAlternate: "#FFED49",
+                darkBackground: "#41464C",
+                darkContainer: "#656B72",
+            },
         },
     },
     plugins: [],
