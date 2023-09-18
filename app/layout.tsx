@@ -23,7 +23,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <StyledComponentsRegistry>
-                <body className={inter.className}>{children}</body>
+                <body className={inter.className + " bg-amoledBackground"}>
+                    {children}
+                </body>
             </StyledComponentsRegistry>
         </html>
     );
