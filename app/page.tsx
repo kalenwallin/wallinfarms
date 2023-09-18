@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const VIDEO_URL = "https://i.kalenwallin.com/file/portfoliov2/sharex/hero.mp4";
 const FALLBACK =
@@ -22,13 +23,26 @@ export default function Home() {
             <div className="absolute inset-0 bg-black opacity-50"></div>
             <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-8 text-center">
                 <div>
+                    <div className="flex justify-center m-4">
+                        <Image
+                            alt=""
+                            src="/icon.svg"
+                            width={37.75}
+                            height={70}
+                            style={{
+                                width: "10%",
+                                height: "auto",
+                            }}
+                        />
+                    </div>
                     <h1 className="text-5xl text-clampH1 font-bold text-white">
                         Wallin Farms
                     </h1>
-                    <h2 className="text-2xl text-clampH2 m-4 text-gray-300">
+                    {/* <h2 className="text-2xl text-clampH2 m-4 text-gray-300">
                         Imperial, NE
-                    </h2>
+                    </h2> */}
                 </div>
+
                 <Link
                     className="px-6 py-3 font-bold text-white bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
                     href="/login"
