@@ -19,9 +19,9 @@ module.exports = {
             colors: {
                 primary: "#D9D9D9",
                 secondary: "#FFED49",
-                darkBackground: "#41464C",
-                darkerBackground: "#252525",
-                amoledBackground: "#000000",
+                darkbackground: "#41464C",
+                darkerbackground: "#252525",
+                amoledbackground: "#000000",
             },
         },
     },

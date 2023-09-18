@@ -1,3 +1,17 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+/* Force these styles even if they're not used 
+   so we can switch to them on the client */
+.bg-darkbackground {
+    background-color: #41464C;
+}
+
+.bg-darkerbackground {
+    background-color: #252525;
+}
+
+.bg-amoledbackground {
+    background-color: #000000;
+}

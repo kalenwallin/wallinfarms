@@ -1,4 +1,4 @@
-import { theme } from "../config";
+import { theme } from "../layout";
 
 export const SCALE_SNAP_PROPS: {
     IMAGE_PATH: string;
