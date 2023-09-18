@@ -20,13 +20,13 @@ export default function ComingSoon(props: {
                         }}
                     />
                 </div>
-                <h1 className="text-5xl text-clampH1 font-black text-darkPrimary">
+                <h1 className="text-5xl text-clampH1 font-black text-primary">
                     {props.line_one}
                 </h1>
-                <h1 className="text-5xl text-clampH1 font-black text-darkAlternate">
+                <h1 className="text-5xl text-clampH1 font-black text-secondary">
                     {props.line_two}
                 </h1>
-                <p className="text-base m-2 text-darkPrimary">COMING SOON</p>;
+                <p className="text-base m-2 text-primary">COMING SOON</p>;
             </div>
         </div>
     );

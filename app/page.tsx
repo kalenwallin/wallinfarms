@@ -35,16 +35,16 @@ export default function Home() {
                             }}
                         />
                     </div>
-                    <h1 className="text-center text-5xl text-clampH1 font-black text-darkPrimary">
+                    <h1 className="text-center text-5xl text-clampH1 font-black text-primary">
                         WALLIN
                     </h1>
-                    <h1 className="text-center text-5xl text-clampH1 font-black text-darkAlternate">
+                    <h1 className="text-center text-5xl text-clampH1 font-black text-secondary">
                         FARMS
                     </h1>
                 </div>
 
                 <Link
-                    className="px-6 py-3 m-4 font-bold text-darkPrimary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
+                    className="px-6 py-3 m-4 font-bold text-primary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
                     href="/login"
                 >
                     SIGN IN
