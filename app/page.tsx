@@ -30,13 +30,16 @@ export default function Home() {
                             width={37.75}
                             height={70}
                             style={{
-                                width: "10%",
+                                width: "25%",
                                 height: "auto",
                             }}
                         />
                     </div>
-                    <h1 className="text-5xl text-clampH1 font-bold text-white">
-                        Wallin Farms
+                    <h1 className="text-center text-5xl text-clampH1 font-black text-darkPrimary">
+                        WALLIN
+                    </h1>
+                    <h1 className="text-center text-5xl text-clampH1 font-black text-darkAlternate">
+                        FARMS
                     </h1>
                     {/* <h2 className="text-2xl text-clampH2 m-4 text-gray-300">
                         Imperial, NE
@@ -44,10 +47,10 @@ export default function Home() {
                 </div>
 
                 <Link
-                    className="px-6 py-3 font-bold text-white bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
+                    className="px-6 py-3 font-bold text-darkPrimary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
                     href="/login"
                 >
-                    Sign in
+                    SIGN IN
                 </Link>
             </div>
         </main>
