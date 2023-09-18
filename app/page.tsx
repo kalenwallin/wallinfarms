@@ -21,7 +21,7 @@ export default function Home() {
                 <source src={VIDEO_URL} type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black opacity-50"></div>
-            <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-8 text-center">
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
                 <div>
                     <div className="flex justify-center m-4">
                         <Image
@@ -44,7 +44,7 @@ export default function Home() {
                 </div>
 
                 <Link
-                    className="px-6 py-3 font-bold text-darkPrimary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
+                    className="px-6 py-3 m-4 font-bold text-darkPrimary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
                     href="/login"
                 >
                     SIGN IN
