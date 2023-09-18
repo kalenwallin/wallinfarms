@@ -21,6 +21,8 @@ module.exports = {
                 darkAlternate: "#FFED49",
                 darkBackground: "#41464C",
                 darkContainer: "#656B72",
+                amoledBackground: "#000000",
+                amoledContainer: "#282828",
             },
         },
     },
