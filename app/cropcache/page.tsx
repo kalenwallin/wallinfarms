@@ -1,19 +1,5 @@
 import ComingSoon from "../components/comingSoon";
-import { theme } from "../config";
-
-export const CROP_CACHE_PROPS: {
-    IMAGE_PATH: string;
-    LINE_ONE: string;
-    LINE_TWO: string;
-    SLUG: string;
-    IMAGE_WIDTH: string;
-} = {
-    IMAGE_PATH: `/${theme}/cc-icon.svg`,
-    LINE_ONE: "CROP",
-    LINE_TWO: "CACHE",
-    SLUG: "/home",
-    IMAGE_WIDTH: "1rem",
-};
+import { CROP_CACHE_PROPS } from "./props";
 
 export default function CropCache() {
     return (

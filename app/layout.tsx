@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
 import StyledComponentsRegistry from "./lib/AntRegistry";
+import { theme } from "./config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <StyledComponentsRegistry>
-                <body className={inter.className + " bg-amoledBackground"}>
+                <body className={`${inter.className} bg-${theme}Background`}>
                     {children}
                 </body>
             </StyledComponentsRegistry>

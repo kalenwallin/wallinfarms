@@ -1,5 +1,12 @@
 import LogoLong from "./logoLong";
-import { HOME_PROPS } from "../home/page";
+import { HOME_PROPS } from "../home/props";
+import { CROP_CACHE_PROPS } from "../cropcache/props";
+import { SCALE_SNAP_PROPS } from "../scalesnap/props";
+
+const navBar = {
+    CROP_CACHE_PROPS: CROP_CACHE_PROPS,
+    SCALE_SNAP_PROPS: SCALE_SNAP_PROPS,
+};
 
 export default function NavBar(props?: {
     image_path?: string;
@@ -8,7 +15,7 @@ export default function NavBar(props?: {
     slug?: string;
 }) {
     return (
-        <div className="relative flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
+        <div className="absolute top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
             <div className="flex" id="nav-breadcrumbs">
                 <a href={HOME_PROPS.SLUG} className="flex items-center">
                     <LogoLong
