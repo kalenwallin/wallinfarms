@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "antd";
+import { LockOutlined } from "@ant-design/icons";
 
 const VIDEO_URL = "https://i.kalenwallin.com/file/portfoliov2/sharex/hero.mp4";
 const FALLBACK =
@@ -44,10 +44,13 @@ export default function Home() {
                 </div>
 
                 <Link
-                    className="px-6 py-3 m-4 font-bold text-black bg-secondary rounded hover:shadow-xl hover:bg-yellow-300 focus:outline-none"
+                    className="px-6 py-2 m-4 font-bold text-black bg-secondary rounded hover:shadow-xl hover:bg-yellow-400 focus:outline-none"
                     href="/login"
                 >
-                    SIGN IN
+                    <div className="flex items-center justify-center">
+                        <LockOutlined />
+                        &nbsp; Sign in
+                    </div>
                 </Link>
             </div>
         </main>
