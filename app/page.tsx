@@ -44,15 +44,10 @@ export default function Home() {
                 </div>
 
                 <Link
-                    className="px-6 m-4 font-bold text-black bg-secondary rounded hover:shadow-xl hover:bg-yellow-300 focus:outline-none"
+                    className="px-6 py-3 m-4 font-bold text-black bg-secondary rounded hover:shadow-xl hover:bg-yellow-300 focus:outline-none"
                     href="/login"
                 >
-                    <Button
-                        type="primary"
-                        icon="LockOutlined"
-                    >
-                        SIGN IN
-                    </Button>
+                    SIGN IN
                 </Link>
             </div>
         </main>
