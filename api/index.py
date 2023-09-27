@@ -30,8 +30,8 @@ class TicketUpload(BaseModel):
     files: List[UploadFile] = File(...)
 
 
-@app.post("/api/python/scalesnap")
-async def scalesnap(upload: TicketUpload):
+@app.post("/api/python/snapscale")
+async def snapscale(upload: TicketUpload):
     client = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
 
     tickets = []

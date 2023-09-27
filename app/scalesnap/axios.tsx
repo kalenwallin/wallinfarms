@@ -46,8 +46,8 @@ export default function Home() {
 
         try {
             const response = await axios.post(
-                "/api/python/scalesnap",
-                formData,
+                "/api/python/snapscale",
+                formData
             );
             console.log(response);
             setFileUrl(`/download/${response.data.fileUrl}`);
@@ -77,7 +77,7 @@ export default function Home() {
         <main className="relative h-screen">
             <div className="relative flex flex-col items-center justify-center h-full space-y-8 text-center">
                 <h1 className="text-5xl text-clampH1 font-bold text-white">
-                    ScaleSnap
+                    SnapScale
                 </h1>
                 <h2 className="text text-gray-300">Under development</h2>
                 <div className="flex flex-col">

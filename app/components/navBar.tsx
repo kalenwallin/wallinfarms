@@ -1,11 +1,11 @@
 import LogoLong from "./logoLong";
 import { HOME_PROPS } from "../home/props";
 import { CROP_CACHE_PROPS } from "../cropcache/props";
-import { SCALE_SNAP_PROPS } from "../scalesnap/props";
+import { SNAP_SCALE_PROPS } from "../snapscale/props";
 
 const navBar = {
     CROP_CACHE_PROPS: CROP_CACHE_PROPS,
-    SCALE_SNAP_PROPS: SCALE_SNAP_PROPS,
+    SNAP_SCALE_PROPS: SNAP_SCALE_PROPS,
 };
 
 export default function NavBar(props?: {
