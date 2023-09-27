@@ -48,3 +48,4 @@ env
 .vscode
 file.log
 *.Identifier
+.vercel

@@ -26,7 +26,7 @@ export default function LogoLong(props?: {
                             props.className ? props.className : "m-4 ml-0"
                         }
                     />
-                    <span className="text-3xl font-black text-primary mr-4">
+                    <span className="text-3xl font-black text-primary">
                         {props.line_one ? props.line_one : ""}
                     </span>
                     <span className="text-3xl font-black text-secondary">
