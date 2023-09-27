@@ -11,7 +11,7 @@ from google.oauth2 import service_account
 from openpyxl import Workbook
 from pydantic import BaseModel
 
-from api.classes import process_image_as_corn_ticket
+from api.classes import process_image_as_scale_ticket
 from api.excel_utils import write_sheet
 
 app = FastAPI()
@@ -40,8 +40,8 @@ async def scalesnap(upload: TicketUpload):
     for file in upload.files:
         contents = await file.read()
         try:
-            corn_ticket = process_image_as_corn_ticket(client, image_binary=contents)
-            tickets.append(corn_ticket)
+            scale_ticket = process_image_as_scale_ticket(client, image_binary=contents)
+            tickets.append(scale_ticket)
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail="Error processing image."

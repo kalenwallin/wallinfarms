@@ -5,7 +5,7 @@ from datetime import datetime
 from google.cloud import vision
 
 
-class CornTicket:
+class ScaleTicket:
     def __init__(
         self,
         date,
@@ -39,7 +39,7 @@ class CornTicket:
 
     def __str__(self):
         return (
-            f"CornTicket({self.date}, {self.sale_location}, {self.ticket}, "
+            f"ScaleTicket({self.date}, {self.sale_location}, {self.ticket}, "
             f"gross={self.gross}, tare={self.tare}, "
             f"mo={self.mo}, tw={self.tw}, "
             f"driver={self.driver}, truck={self.truck}, field_number={self.field_number})"
@@ -136,9 +136,9 @@ def generate_random_field_number():
 
 def generate_mock_ticket():
     """
-    Generate a mock CornTicket object.
+    Generate a mock ScaleTicket object.
     """
-    return CornTicket(
+    return ScaleTicket(
         date=generate_random_date(2023),
         ticket=random.randint(1, 1000),
         gross=random.randint(50000, 99999),
@@ -152,13 +152,13 @@ def generate_mock_ticket():
 
 def generate_mock_tickets(num_tickets=2):
     """
-    Generate a list of mock CornTicket objects based on the number of tickets provided.
+    Generate a list of mock ScaleTicket objects based on the number of tickets provided.
     """
     return [generate_mock_ticket() for _ in range(num_tickets)]
 
 
-def process_image_as_corn_ticket(client, image_binary=None, image_path=None):
-    """Detects text as a CornTicket in an image."""
+def process_image_as_scale_ticket(client, image_binary=None, image_path=None):
+    """Detects text as a ScaleTicket in an image."""
     if image_path:
         with open(image_path, "rb") as image_file:
             image_contents = image_file.read()
@@ -224,7 +224,7 @@ def process_image_as_corn_ticket(client, image_binary=None, image_path=None):
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
-    corn_ticket = CornTicket(date, ticket, gross, tare, mo, tw)
-    # TODO: save corn ticket to the database
-    print(corn_ticket)
-    return corn_ticket
+    scale_ticket = ScaleTicket(date, ticket, gross, tare, mo, tw)
+    # TODO: save scale ticket to the database
+    print(scale_ticket)
+    return scale_ticket
