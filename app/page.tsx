@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Button } from "antd";
 
 const VIDEO_URL = "https://i.kalenwallin.com/file/portfoliov2/sharex/hero.mp4";
 const FALLBACK =
@@ -17,7 +18,6 @@ export default function Home() {
                 poster={FALLBACK}
                 id="bgvid"
             >
-                <source src="polina.webm" type="video/webm" />
                 <source src={VIDEO_URL} type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -27,10 +27,10 @@ export default function Home() {
                         <Image
                             alt=""
                             src="/icon.svg"
-                            width={37.75}
-                            height={70}
+                            width={75}
+                            height={75}
                             style={{
-                                width: "25%",
+                                width: "35%",
                                 height: "auto",
                             }}
                         />
@@ -44,10 +44,15 @@ export default function Home() {
                 </div>
 
                 <Link
-                    className="px-6 py-3 m-4 font-bold text-primary bg-green-700 rounded hover:shadow-xl hover:bg-green-800 focus:outline-none"
+                    className="px-6 m-4 font-bold text-black bg-secondary rounded hover:shadow-xl hover:bg-yellow-300 focus:outline-none"
                     href="/login"
                 >
-                    SIGN IN
+                    <Button
+                        type="primary"
+                        icon="LockOutlined"
+                    >
+                        SIGN IN
+                    </Button>
                 </Link>
             </div>
         </main>
