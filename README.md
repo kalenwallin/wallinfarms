@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://wallinfarms.us">
-    <img src="https://i.kalenwallin.com/file/portfoliov2/sharex/corn.png" height="96">
+    <img src="https://wallinfarms.us/icon.svg" height="96">
     <h3 align="center">Wallin Farms</h3>
   </a>
 </p>
