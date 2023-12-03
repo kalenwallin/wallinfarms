@@ -1,6 +1,7 @@
 import ComingSoon from "../components/comingSoon";
 import { SNAP_SCALE_PROPS } from "./props";
 import NavBar from "../components/navBar";
+import ExcelExportPreview from "@/components/excel_export_preview";
 
 export default function Home() {
     return (
@@ -16,6 +17,7 @@ export default function Home() {
                 line_one={SNAP_SCALE_PROPS.LINE_ONE}
                 line_two={SNAP_SCALE_PROPS.LINE_TWO}
             />
+            <ExcelExportPreview />
         </main>
     );
 }

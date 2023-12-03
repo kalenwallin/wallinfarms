@@ -2,6 +2,8 @@ import LogoLong from "./logoLong";
 import { HOME_PROPS } from "../home/props";
 import { CROP_CACHE_PROPS } from "../cropcache/props";
 import { SNAP_SCALE_PROPS } from "../snapscale/props";
+import LogoShort from "./logoShort";
+import Link from "next/link";
 
 const navBar = {
     CROP_CACHE_PROPS: CROP_CACHE_PROPS,
@@ -15,18 +17,23 @@ export default function NavBar(props?: {
     slug?: string;
 }) {
     return (
-        <div className="absolute top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
+        <div className="absolute z-10 top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
             <div className="flex" id="nav-breadcrumbs">
-                <a href={HOME_PROPS.SLUG} className="flex items-center">
-                    <LogoLong
+                <Link href={HOME_PROPS.SLUG} className="flex items-center">
+                    {/* <LogoLong
                         image_path={HOME_PROPS.IMAGE_PATH}
                         line_one={HOME_PROPS.LINE_ONE}
                         line_two={HOME_PROPS.LINE_TWO}
                         image_width={HOME_PROPS.IMAGE_WIDTH}
                         className="m-4"
+                    /> */}
+                    <LogoShort
+                        image_path={HOME_PROPS.IMAGE_PATH}
+                        image_width="2rem"
+                        className="ml-4"
                     />
-                </a>
-                {props ? (
+                </Link>
+                {props?.slug ? (
                     <div className="relative flex flex-row items-center stroke-primary">
                         <svg
                             height="48"
@@ -45,21 +52,37 @@ export default function NavBar(props?: {
                             href={props.slug ? props.slug : "#"}
                             className="flex items-center"
                         >
-                            <LogoLong
+                            {/* <LogoLong
                                 image_path={props.image_path}
                                 line_one={props.line_one}
                                 line_two={props.line_two}
+                            /> */}
+                            <LogoShort
+                                image_path={props.image_path}
+                                className="mr-4"
                             />
                         </a>
                     </div>
                 ) : null}
             </div>
-            <div className="flex">
-                <LogoLong
+            <div className="flex m-4 hover:cursor-pointer text-primary">
+                <div className="m-4">
+                    <Link href={navBar.SNAP_SCALE_PROPS.SLUG}>
+                        <span>{navBar.SNAP_SCALE_PROPS.LINE_ONE}</span>
+                        <span>{navBar.SNAP_SCALE_PROPS.LINE_TWO}</span>
+                    </Link>
+                </div>
+                <div className="m-4">
+                    <Link href={navBar.CROP_CACHE_PROPS.SLUG}>
+                        {navBar.CROP_CACHE_PROPS.LINE_ONE}
+                        {navBar.CROP_CACHE_PROPS.LINE_TWO}
+                    </Link>
+                </div>
+                {/* <LogoLong
                     image_path={props?.image_path}
                     line_one={props?.line_one}
                     line_two={props?.line_two}
-                />
+                /> */}
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ export default function ComingSoon(props: {
     line_two: string;
 }) {
     return (
-        <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-8 text-center">
+        <div className="relative flex flex-col items-center justify-center h-full space-y-8 text-center">
             <div>
                 <div className="flex justify-center m-4">
                     <Image
