@@ -30,8 +30,9 @@ export default function ExcelExportPreview() {
 
     return (
         <div className="bg-black text-white p-4">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-left items-center mb-4">
                 {/* <IconPrinter className="text-white" /> */}
+                <IconFileexcel className="text-green-500 mr-2" />
                 <p className="text-lg font-semibold">Excel report ready:</p>
                 {/* <Button
                     className="bg-yellow-400 text-black"
@@ -40,7 +41,7 @@ export default function ExcelExportPreview() {
                     Download Excel report
                 </Button> */}
             </div>
-            <div className="bg-gray-700 text-white rounded-t p-2">
+            <div className="bg-neutral-700 text-white rounded-t p-2">
                 <Tabs>
                     <div>
                         <div className="font-semibold text-sm">
@@ -49,10 +50,10 @@ export default function ExcelExportPreview() {
                     </div>
                 </Tabs>
             </div>
-            <div className="bg-gray-700 text-white text-black rounded-b overflow-auto max-h-[500px] overflow-x-auto">
+            <div className="bg-neutral-700 text-white text-black rounded-b overflow-auto max-h-[500px] overflow-x-auto">
                 <table className="table-fixed min-w-full">
                     <thead>
-                        <tr className="bg-gray-800">
+                        <tr className="bg-neutral-800">
                             <th className="w-1/4 p-2">A</th>
                             <th className="w-1/4 p-2">B</th>
                             <th className="w-1/4 p-2">C</th>
@@ -104,7 +105,7 @@ export default function ExcelExportPreview() {
                         <tr>
                             <td className="p-2" colSpan={4} />
                         </tr>
-                        <tr className="bg-gray-800 font-semibold">
+                        <tr className="bg-neutral-800 font-semibold">
                             <td className="p-2">Date</td>
                             <td className="p-2">Ticket</td>
                             <td className="p-2">Gross</td>
@@ -229,18 +230,14 @@ export default function ExcelExportPreview() {
                 </table>
             </div>
             <div className="flex justify-between items-center mt-4">
-                <Link
-                    className="flex items-center space-x-1 text-yellow-400"
-                    href="#"
-                >
+                <div className="flex items-center space-x-1 text-yellow-400">
                     <IconExclamationtriangle className="text-yellow-400" />
                     <span>Something look wrong? Click any field to edit</span>
-                </Link>
+                </div>
                 <div className="flex space-x-4">
-                    <IconFileexcel className="text-green-500" />
-                    <div onClick={downloadTable}>
+                    <button onClick={downloadTable}>
                         <IconDownload className="text-white" />
-                    </div>
+                    </button>
                     <button onClick={printTable}>
                         <IconPrinter className="text-white" />
                     </button>
