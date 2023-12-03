@@ -40,7 +40,7 @@ export default function ExcelExportPreview() {
                     Download Excel report
                 </Button> */}
             </div>
-            <div className="bg-white text-black rounded-t p-2">
+            <div className="bg-gray-700 text-white rounded-t p-2">
                 <Tabs>
                     <div>
                         <div className="font-semibold text-sm">
@@ -49,10 +49,10 @@ export default function ExcelExportPreview() {
                     </div>
                 </Tabs>
             </div>
-            <div className="bg-white text-black rounded-b overflow-auto max-h-[500px] overflow-x-auto">
+            <div className="bg-gray-700 text-white text-black rounded-b overflow-auto max-h-[500px] overflow-x-auto">
                 <table className="table-fixed min-w-full">
                     <thead>
-                        <tr className="bg-gray-200">
+                        <tr className="bg-gray-800">
                             <th className="w-1/4 p-2">A</th>
                             <th className="w-1/4 p-2">B</th>
                             <th className="w-1/4 p-2">C</th>
@@ -104,7 +104,7 @@ export default function ExcelExportPreview() {
                         <tr>
                             <td className="p-2" colSpan={4} />
                         </tr>
-                        <tr className="bg-gray-200 font-semibold">
+                        <tr className="bg-gray-800 font-semibold">
                             <td className="p-2">Date</td>
                             <td className="p-2">Ticket</td>
                             <td className="p-2">Gross</td>
