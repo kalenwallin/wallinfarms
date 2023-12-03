@@ -1,3 +1,4 @@
+"use client";
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/80v2rkV1I7h
@@ -5,6 +6,7 @@
 import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function ExcelExportPreview() {
     const parseTableToExcel = () => {
@@ -20,6 +22,12 @@ export default function ExcelExportPreview() {
         console.log("Print TODO: Print this new layout");
         return window.print();
     };
+
+    // Use useEffect for client-side logic, if needed
+    useEffect(() => {
+        // Any client-side setup can go here
+    }, []);
+
     return (
         <div className="bg-black text-white p-4">
             <div className="flex justify-between items-center mb-4">
@@ -230,12 +238,12 @@ export default function ExcelExportPreview() {
                 </Link>
                 <div className="flex space-x-4">
                     <IconFileexcel className="text-green-500" />
-                    <Button onClick={downloadTable}>
+                    <div onClick={downloadTable}>
                         <IconDownload className="text-white" />
-                    </Button>
-                    <Button onClick={printTable}>
+                    </div>
+                    <button onClick={printTable}>
                         <IconPrinter className="text-white" />
-                    </Button>
+                    </button>
                 </div>
             </div>
         </div>
