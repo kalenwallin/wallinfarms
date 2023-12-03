@@ -95,8 +95,13 @@ export default function ExcelExportPreview() {
                             <td className="p-2" colSpan={4} />
                         </tr>
                         <tr>
-                            <td className="p-2 font-semibold" colSpan={4}>
-                                Sold To:
+                            <td className="p-2 font-semibold">Sold To:</td>
+                            <td className="p-2 font-semibold">
+                                <input
+                                    className="w-full bg-transparent border-transparent"
+                                    defaultValue="FVC"
+                                    type="text"
+                                />
                             </td>
                         </tr>
                         <tr>
@@ -203,9 +208,9 @@ export default function ExcelExportPreview() {
                         </tr>
                         <tr className="font-semibold">
                             <td className="p-2">Totals</td>
+                            <td className="p-2" />
                             <td className="p-2">280460</td>
                             <td className="p-2">77160</td>
-                            <td className="p-2" />
                         </tr>
                         <tr>
                             <td className="p-2" colSpan={4} />
