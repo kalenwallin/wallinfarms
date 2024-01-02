@@ -9,20 +9,21 @@ export default function Login() {
     return (
         <>
             <main className="relative h-screen">
+                <div className="flex justify-center m-8 absolute">
+                    <Image
+                        alt=""
+                        src={"/icon.svg"}
+                        width={35}
+                        height={35}
+                        style={{
+                            width: "15%",
+                            height: "auto",
+                        }}
+                    />
+                </div>
                 <div className="flex flex-col items-center justify-center h-screen">
-                    <div className="flex justify-center m-4">
-                        <Image
-                            alt=""
-                            src={"/icon.svg"}
-                            width={70}
-                            height={70}
-                            style={{
-                                width: "30%",
-                                height: "auto",
-                            }}
-                        />
-                    </div>
                     <div className="w-3/4 md:w-1/2 lg:w-1/4">
+                        <div className="SignIn text-center text-primary text-xl font-normal font-['Inter'] leading-none">Sign in</div>
                         <Auth
                             supabaseClient={supabase}
                             redirectTo='/snapscale'
