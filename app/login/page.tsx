@@ -57,6 +57,7 @@ export default function Login() {
                                 },
                             }}
                             providers={[]}
+                            magicLink={true}
                         />
                     </div>
                 </div>
