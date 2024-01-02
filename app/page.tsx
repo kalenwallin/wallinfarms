@@ -21,7 +21,7 @@ export default function Home() {
                 <source src={VIDEO_URL} type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black opacity-50"></div>
-            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center" style={{ height: "90vh" }}>
                 <div>
                     <div className="flex justify-center m-4">
                         <Image
