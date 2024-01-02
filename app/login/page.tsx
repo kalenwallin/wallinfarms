@@ -50,6 +50,9 @@ export default function Login() {
                                         email_label: 'Email address',
                                         password_label: 'Password',
                                     },
+                                    sign_up: {
+                                        link_text: '',
+                                    }
                                 },
                             }}
                             providers={[]}
