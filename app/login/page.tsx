@@ -1,43 +1,62 @@
-'use client';
+'use client'
+import { Auth } from '@supabase/auth-ui-react';
 import { supabase } from '../lib/supabaseClient';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
 
-async function signIn(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    })
+import Image from "next/image";
 
-    if (error) {
-        console.error('Error signing in:', error.message)
-        return data;
-    } else {
-        console.log('User signed in:', data.user)
-        return data;
-    }
-}
-
-async function handleFormSubmit(event) {
-    event.preventDefault()
-    const email = event.target.email.value
-    const password = event.target.password.value
-    const data = await signIn(email, password)
-    if (data.user) {
-        window.location.href = '/home';
-    }
-}
-
-export default function Home() {
+export default function Login() {
     return (
-        <main className="relative h-screen">
-            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-                <form onSubmit={(event) => handleFormSubmit(event)}>
-                    <label htmlFor="email">Email:</label><br />
-                    <input type="email" id="email" name="email" required /><br />
-                    <label htmlFor="password">Password:</label><br />
-                    <input type="password" id="password" name="password" required /><br />
-                    <input type="submit" value="Login" />
-                </form>
-            </div>
-        </main>
+        <>
+            <main className="relative h-screen">
+                <div className="flex flex-col items-center justify-center h-screen">
+                    <div className="flex justify-center m-4">
+                        <Image
+                            alt=""
+                            src={"/icon.svg"}
+                            width={70}
+                            height={70}
+                            style={{
+                                width: "30%",
+                                height: "auto",
+                            }}
+                        />
+                    </div>
+                    <div className="w-3/4 md:w-1/2 lg:w-1/4">
+                        <Auth
+                            supabaseClient={supabase}
+                            redirectTo='/snapscale'
+                            appearance={{
+                                theme: ThemeSupa,
+                                extend: true,
+                                variables: {
+                                    default: {
+                                        colors: {
+                                            brand: '#FFED49',
+                                            brandAccent: '#FACC14',
+                                            brandButtonText: '#000000',
+                                        },
+                                    },
+                                },
+                                style: {
+                                    button: { color: 'black' },
+                                    anchor: { color: '#FFED49' },
+                                },
+                            }}
+                            theme="dark"
+                            localization={{
+                                variables: {
+                                    sign_in: {
+                                        email_label: 'Email address',
+                                        password_label: 'Password',
+                                    },
+                                },
+                            }}
+                            providers={[]}
+                        />
+                    </div>
+                </div>
+            </main>
+        </>
     );
 }
