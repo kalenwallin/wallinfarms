@@ -4,7 +4,7 @@ import { CROP_CACHE_PROPS } from "./props";
 
 export default function CropCache() {
     return (
-        <main className="relative h-screen">
+        <main className="relative h-screen" style={{ height: "90vh" }}>
             <NavBar
                 image_path={CROP_CACHE_PROPS.IMAGE_PATH}
                 line_one={CROP_CACHE_PROPS.LINE_ONE}

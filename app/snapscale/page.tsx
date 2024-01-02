@@ -5,7 +5,7 @@ import ExcelExportPreview from "@/components/excel_export_preview";
 
 export default function Home() {
     return (
-        <main className="relative h-screen">
+        <main className="relative h-screen" style={{ height: "90vh" }}>
             <NavBar
                 image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
                 line_one={SNAP_SCALE_PROPS.LINE_ONE}
@@ -17,6 +17,7 @@ export default function Home() {
                 line_one={SNAP_SCALE_PROPS.LINE_ONE}
                 line_two={SNAP_SCALE_PROPS.LINE_TWO}
             />
+            <div style={{ height: "10vh" }}></div>
             <ExcelExportPreview />
         </main>
     );
