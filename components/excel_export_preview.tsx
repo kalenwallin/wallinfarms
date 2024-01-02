@@ -235,9 +235,9 @@ export default function ExcelExportPreview() {
                 </table>
             </div>
             <div className="flex justify-between items-center mt-4">
-                <div className="flex items-center space-x-1 text-yellow-400">
-                    <IconExclamationtriangle className="text-yellow-400" />
-                    <span>Something look wrong? Click any field to edit</span>
+                <div className="flex items-center space-x-1 text-yellow-300">
+                    <IconInformationCircle className="text-yellow-300 mr-1" />
+                    <span>Click any field to edit</span>
                 </div>
                 <div className="flex space-x-4">
                     <button onClick={downloadTable}>
@@ -269,6 +269,27 @@ function IconDownload(props) {
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" x2="12" y1="15" y2="3" />
+        </svg>
+    );
+}
+
+function IconInformationCircle(props) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12" y2="8" />
         </svg>
     );
 }
