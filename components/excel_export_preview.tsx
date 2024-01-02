@@ -235,8 +235,8 @@ export default function ExcelExportPreview() {
                 </table>
             </div>
             <div className="flex justify-between items-center mt-4">
-                <div className="flex items-center space-x-1 text-yellow-300">
-                    <IconInformationCircle className="text-yellow-300 mr-1" />
+                <div className="flex items-center space-x-1 text-primary">
+                    <IconInformationCircle className="text-blue-500 mr-1" />
                     <span>Click any field to edit</span>
                 </div>
                 <div className="flex space-x-4">
