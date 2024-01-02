@@ -4,7 +4,7 @@ import { HOME_PROPS } from "./props";
 
 export default function Home() {
     return (
-        <main className="relative h-screen">
+        <main className="relative h-screen" style={{ height: "90vh" }}>
             <NavBar />
             <ComingSoon
                 image_path={HOME_PROPS.IMAGE_PATH}
