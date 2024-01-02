@@ -9,7 +9,7 @@ export default function Login() {
     return (
         <>
             <main className="relative h-screen">
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex flex-col items-center justify-center h-screen" style={{ height: "90vh" }}>
                     <div className="flex justify-center m-4">
                         <Image
                             alt=""
