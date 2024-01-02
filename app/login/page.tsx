@@ -1,4 +1,4 @@
-import ComingSoon from "../components/comingSoon";
+'use client';
 import { supabase } from '../lib/supabaseClient';
 
 async function signIn(email, password) {
@@ -9,22 +9,35 @@ async function signIn(email, password) {
 
     if (error) {
         console.error('Error signing in:', error.message)
+        return data;
     } else {
         console.log('User signed in:', data.user)
+        return data;
     }
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
     event.preventDefault()
     const email = event.target.email.value
     const password = event.target.password.value
-    signIn(email, password)
+    const data = await signIn(email, password)
+    if (data.user) {
+        window.location.href = '/home';
+    }
 }
 
 export default function Home() {
     return (
         <main className="relative h-screen">
-            <ComingSoon image_path="/icon.svg" line_one="SIGN" line_two="IN" />
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+                <form onSubmit={(event) => handleFormSubmit(event)}>
+                    <label htmlFor="email">Email:</label><br />
+                    <input type="email" id="email" name="email" required /><br />
+                    <label htmlFor="password">Password:</label><br />
+                    <input type="password" id="password" name="password" required /><br />
+                    <input type="submit" value="Login" />
+                </form>
+            </div>
         </main>
     );
 }

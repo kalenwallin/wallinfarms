@@ -28,6 +28,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "concurrently": "^8.0.1",
+    "dotenv": "^16.3.1",
     "eslint": "8.41.0",
     "eslint-config-next": "latest",
     "lucide-react": "^0.294.0",
