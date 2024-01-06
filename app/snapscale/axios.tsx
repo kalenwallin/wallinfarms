@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
-import { AxiosProgressEvent } from "axios";
 
 export default function Home() {
     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);

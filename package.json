@@ -28,7 +28,7 @@
     "@types/react-dom": "18.2.4",
     "antd": "^5.8.6",
     "autoprefixer": "^10.4.15",
-    "axios": "^1.6.5",
+    "axios": "^0.21.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "concurrently": "^8.0.1",
