@@ -55,7 +55,7 @@ export default function Login() {
                         <div className="SignIn text-center text-primary text-xl font-normal font-['Inter'] leading-none">Sign in</div>
                         <Auth
                             supabaseClient={supabase}
-                            redirectTo='/snapscale'
+                            redirectTo='https://wallinfarms.us/auth/callback'
                             appearance={{
                                 theme: ThemeSupa,
                                 extend: true,
