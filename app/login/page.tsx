@@ -58,6 +58,8 @@ export default function Login() {
                             }}
                             providers={[]}
                             magicLink={true}
+                            view='magic_link'
+                            showLinks={false}
                         />
                     </div>
                 </div>
