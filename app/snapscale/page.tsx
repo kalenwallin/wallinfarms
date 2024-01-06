@@ -2,7 +2,7 @@ import ComingSoon from "../components/comingSoon";
 import { SNAP_SCALE_PROPS } from "./props";
 import NavBar from "../components/navBar";
 import ExcelExportPreview from "@/components/excel_export_preview";
-import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget'
+// import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget'
 
 export default function Home() {
     return (
@@ -19,7 +19,7 @@ export default function Home() {
                 line_two={SNAP_SCALE_PROPS.LINE_TWO}
             />
             <div style={{ height: "10vh" }}></div>
-            <WidgetLoader /> // add to top of file. Only use once.
+            {/* <WidgetLoader /> // add to top of file. Only use once.
             <Widget
                 sources={['local', 'camera', 'dropbox']} // set the sources available for uploading -> by default
                 // all sources are available. More information on their use can be found at
@@ -94,7 +94,7 @@ export default function Home() {
             // withCredentials={true} // default = true -> check axios documentation for more information
             // unique_filename={true} // setting it to false, you can tell Cloudinary not to attempt to make
             // the Public ID unique, and just use the normalized file name -> default = true
-            />
+            /> */}
             <ExcelExportPreview />
         </main>
     );
