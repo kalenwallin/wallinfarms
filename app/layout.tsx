@@ -3,12 +3,12 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
+const metadata = {
     title: "Wallin Farms",
     description: "Harvest reporting and management.",
 };
 
-export const theme = "amoled"; // dark, darker, amoled
+const theme = "amoled"; // dark, darker, amoled
 
 import { Cloudinary } from "@cloudinary/url-gen";
 
