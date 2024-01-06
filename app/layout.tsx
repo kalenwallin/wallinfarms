@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import StyledComponentsRegistry from "./lib/AntRegistry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +23,9 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <StyledComponentsRegistry>
-                <body className={`${inter.className} bg-${theme}background`}>
-                    {children}
-                </body>
-            </StyledComponentsRegistry>
+            <body className={`${inter.className} bg-${theme}background`}>
+                {children}
+            </body>
         </html>
     );
 }

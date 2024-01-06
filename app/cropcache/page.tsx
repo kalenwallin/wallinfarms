@@ -1,8 +1,14 @@
+import { redirect } from "next/navigation";
 import ComingSoon from "../components/comingSoon";
 import NavBar from "../components/navBar";
+import readUserSession from "../lib/actions";
 import { CROP_CACHE_PROPS } from "./props";
 
-export default function CropCache() {
+export default async function CropCache() {
+    const { data } = await readUserSession();
+    if (!data.session) {
+        return redirect('/signin');
+    }
     return (
         <main className="relative h-screen" style={{ height: "90vh" }}>
             <NavBar

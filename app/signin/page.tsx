@@ -1,13 +1,17 @@
 'use client'
 import { Auth } from '@supabase/auth-ui-react';
-import { supabase } from '../lib/supabaseClient';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { createBrowserClient } from '@supabase/ssr'
 
 import Image from "next/image";
 import { useEffect } from 'react';
 
-export default function Login() {
-    // * Supabase Auth Error Message Translation
+export default function Page() {
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
     useEffect(() => {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
@@ -22,7 +26,7 @@ export default function Login() {
                     ) {
                         const originErrorMessage = node.innerHTML.trim();
                         if (originErrorMessage.includes("Signups not allowed for this instance")) {
-                            node.innerHTML = "Contact <a style='text-decoration: underline' href='mailto:kalenwallin@kalenwallin.com'>kalenwallin@kalenwallin.com</a> to request an account.";
+                            node.innerHTML = "You do not have an account set up. Contact <a style='text-decoration: underline' href='mailto:kalenwallin@kalenwallin.com'>kalenwallin@kalenwallin.com</a> to request an account.";
                         }
                     }
                 }
@@ -55,7 +59,10 @@ export default function Login() {
                         <div className="SignIn text-center text-primary text-xl font-normal font-['Inter'] leading-none">Sign in</div>
                         <Auth
                             supabaseClient={supabase}
-                            redirectTo='https://wallinfarms.us/auth/callback/'
+                            redirectTo={
+                                process.env.NODE_ENV == "development" ?
+                                    'http://localhost:3000/auth/callback' :
+                                    'https://wallinfarms.us/auth/callback'}
                             appearance={{
                                 theme: ThemeSupa,
                                 extend: true,
@@ -74,15 +81,6 @@ export default function Login() {
                                 },
                             }}
                             theme="dark"
-                            localization={{
-                                variables: {
-                                    magic_link: {
-                                        button_label: 'Send OTP Login Link',
-                                        loading_button_label: 'Sending...',
-                                        confirmation_text: 'Check your email for OTP Login Link',
-                                    },
-                                },
-                            }}
                             providers={[]}
                             magicLink={true}
                             view='magic_link'

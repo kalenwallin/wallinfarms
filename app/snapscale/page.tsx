@@ -2,11 +2,19 @@ import ComingSoon from "../components/comingSoon";
 import { SNAP_SCALE_PROPS } from "./props";
 import NavBar from "../components/navBar";
 import ExcelExportPreview from "@/components/excel_export_preview";
+import readUserSession from "../lib/actions";
+import { redirect } from "next/navigation";
 // import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget'
 
-export default function Home() {
+export default async function Page() {
+    const { data } = await readUserSession();
+    if (!data.session) {
+        return redirect('/signin');
+    }
+
     return (
         <main className="relative h-screen" style={{ height: "90vh" }}>
+
             <NavBar
                 image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
                 line_one={SNAP_SCALE_PROPS.LINE_ONE}
