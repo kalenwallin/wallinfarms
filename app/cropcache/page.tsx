@@ -11,7 +11,7 @@ export default async function CropCache() {
         return redirect('/signin');
     }
     return (
-        <main className="relative h-screen" style={{ height: "90vh" }}>
+        <main className="relative h-screen" style={{ height: "85vh" }}>
             <NavBar current_page="cropcache" image_path={CROP_CACHE_PROPS.IMAGE_PATH} slug={CROP_CACHE_PROPS.SLUG} />
             <ComingSoon
                 image_path={CROP_CACHE_PROPS.IMAGE_PATH}

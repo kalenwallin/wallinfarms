@@ -11,8 +11,8 @@ export default async function Home() {
         return redirect('/signin')
     }
     return (
-        <main className="relative h-screen" style={{ height: "90vh" }}>
-            <NavBar current_page="home" image_path={HOME_PROPS.IMAGE_PATH} slug={HOME_PROPS.SLUG} />
+        <main className="relative h-screen" style={{ height: "85vh" }}>
+            <NavBar current_page="home" />
             <ComingSoon
                 image_path={HOME_PROPS.IMAGE_PATH}
                 line_one={HOME_PROPS.LINE_ONE}

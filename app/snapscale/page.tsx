@@ -16,7 +16,7 @@ export default async function SnapScale() {
     return (
         <>
             <NavBar current_page="snapscale" image_path={SNAP_SCALE_PROPS.IMAGE_PATH} slug={SNAP_SCALE_PROPS.SLUG} />
-            <main className="relative h-screen mb-16" style={{ height: "90vh" }}>
+            <main className="relative h-screen" style={{ height: "85vh" }}>
                 <ComingSoon
                     image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
                     line_one={SNAP_SCALE_PROPS.LINE_ONE}

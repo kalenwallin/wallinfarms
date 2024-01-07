@@ -14,7 +14,7 @@ export default function LargeNavBar(props?: {
     slug?: string;
 }) {
     return (
-        <div className="absolute z-10 top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
+        <div className="relative z-10 top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
             <div className="flex" id="nav-breadcrumbs">
                 <Link href={HOME_PROPS.SLUG} className="flex items-center">
                     <LogoShort image_path={HOME_PROPS.IMAGE_PATH} image_width="2rem" className="ml-4" />
