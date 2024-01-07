@@ -1,33 +1,29 @@
 import ComingSoon from "../components/comingSoon";
 import { SNAP_SCALE_PROPS } from "./props";
-import NavBar from "../components/navBar";
 import ExcelExportPreview from "@/components/excel_export_preview";
 import readUserSession from "../lib/actions";
 import { redirect } from "next/navigation";
+import NavBar from "../components/nav/navBar";
+
 // import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget'
 
-export default async function Page() {
+export default async function SnapScale() {
     const { data } = await readUserSession();
     if (!data.session) {
         return redirect('/signin');
     }
 
     return (
-        <main className="relative h-screen" style={{ height: "90vh" }}>
-
-            <NavBar
-                image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
-                line_one={SNAP_SCALE_PROPS.LINE_ONE}
-                line_two={SNAP_SCALE_PROPS.LINE_TWO}
-                slug={SNAP_SCALE_PROPS.SLUG}
-            />
-            <ComingSoon
-                image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
-                line_one={SNAP_SCALE_PROPS.LINE_ONE}
-                line_two={SNAP_SCALE_PROPS.LINE_TWO}
-            />
-            <div style={{ height: "10vh" }}></div>
-            {/* <WidgetLoader /> // add to top of file. Only use once.
+        <>
+            <NavBar current_page="snapscale" image_path={SNAP_SCALE_PROPS.IMAGE_PATH} slug={SNAP_SCALE_PROPS.SLUG} />
+            <main className="relative h-screen mb-16" style={{ height: "90vh" }}>
+                <ComingSoon
+                    image_path={SNAP_SCALE_PROPS.IMAGE_PATH}
+                    line_one={SNAP_SCALE_PROPS.LINE_ONE}
+                    line_two={SNAP_SCALE_PROPS.LINE_TWO}
+                />
+                <div style={{ height: "10vh" }}></div>
+                {/* <WidgetLoader /> // add to top of file. Only use once.
             <Widget
                 sources={['local', 'camera', 'dropbox']} // set the sources available for uploading -> by default
                 // all sources are available. More information on their use can be found at
@@ -103,7 +99,9 @@ export default async function Page() {
             // unique_filename={true} // setting it to false, you can tell Cloudinary not to attempt to make
             // the Public ID unique, and just use the normalized file name -> default = true
             /> */}
-            <ExcelExportPreview />
-        </main>
+                <ExcelExportPreview />
+                <div className="h-16"></div>
+            </main>
+        </>
     );
 }

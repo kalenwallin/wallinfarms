@@ -1,35 +1,18 @@
-import { HOME_PROPS } from "../home/props";
-import { CROP_CACHE_PROPS } from "../cropcache/props";
-import { SNAP_SCALE_PROPS } from "../snapscale/props";
-import LogoShort from "./logoShort";
+import { HOME_PROPS } from "../../home/props";
+import { CROP_CACHE_PROPS } from "../../cropcache/props";
+import { SNAP_SCALE_PROPS } from "../../snapscale/props";
+import LogoShort from "../logoShort";
 import Link from "next/link";
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from "next/headers";
 
 const navBar = {
     CROP_CACHE_PROPS: CROP_CACHE_PROPS,
     SNAP_SCALE_PROPS: SNAP_SCALE_PROPS,
 };
 
-export default function NavBar(props?: {
+export default function LargeNavBar(props?: {
     image_path?: string;
-    line_one?: string;
-    line_two?: string;
     slug?: string;
 }) {
-    const cookieStore = cookies()
-
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                get(name: string) {
-                    return cookieStore.get(name)?.value
-                },
-            },
-        }
-    )
     return (
         <div className="absolute z-10 top-0 flex flex-row border-b border-neutral-800 w-full h-16 items-center justify-between">
             <div className="flex" id="nav-breadcrumbs">
@@ -60,13 +43,11 @@ export default function NavBar(props?: {
                         {navBar.CROP_CACHE_PROPS.LINE_TWO}
                     </Link>
                 </div>
-                {supabase.auth.getSession() ?
-                    <div className="m-4">
-                        <Link href="/auth/signout">
-                            SIGNOUT
-                        </Link>
-                    </div> : null
-                }
+                <div className="m-4">
+                    <Link href="/auth/signout">
+                        SIGNOUT
+                    </Link>
+                </div>
             </div>
         </div>
     );
