@@ -5,6 +5,9 @@ import { WidgetLoader, Widget } from 'react-cloudinary-upload-widget'
 export default function Cloudinary() {
     const successCallBack = () => {
         console.log('Upload Done!');
+        // call the api
+        // Send images to Google Cloud Vision API
+        // Parse text into React Spreadsheet
     }
     const failureCallBack = () => {
         console.log('Upload Failed!');
@@ -21,7 +24,7 @@ export default function Cloudinary() {
                 resourceType={'image'} // optionally set with 'auto', 'image', 'video' or 'raw' -> default = 'auto'
                 cloudName={'dab9joh7p'} // your cloudinary account cloud name.
                 // Located on https://cloudinary.com/console/
-                uploadPreset={'preset1'} // check that an upload preset exists and check mode is signed or unisgned
+                uploadPreset={'wallinfarms'} // check that an upload preset exists and check mode is signed or unisgned
                 buttonText={
                     <div className='flex items-center justify-center'>Upload Photos &nbsp; <CloudUploadOutlined className='text-xl/[0]' /></div>
                 }
@@ -34,14 +37,14 @@ export default function Cloudinary() {
                     borderRadius: '0.25rem',
                     height: '40px',
                     margin: '1rem',
-                    fontWeight: '700',
-
                 }} // inline styling only or style id='cloudinary_upload_button'
                 folder={'wallinfarms'} // set cloudinary folder name to send file
                 cropping={true} // set ability to crop images -> default = true
                 // https://support.cloudinary.com/hc/en-us/articles/203062071-How-to-crop-images-via-the-Upload-Widget-#:~:text=Click%20on%20the%20%22Edit%22%20link,OK%22%20and%20Save%20the%20changes.
                 // more information here on cropping. Coordinates are returned or upload preset needs changing
                 multiple={true} // set to false as default. Allows multiple file uploading
+                showAdvancedOptions={false}
+                customPublicId={false}
                 // will only allow 1 file to be uploaded if cropping set to true
                 autoClose={true} // will close the widget after success. Default true
                 onSuccess={successCallBack} // add success callback -> returns result
@@ -53,27 +56,29 @@ export default function Cloudinary() {
                 //eager={'w_400,h_300,c_pad|w_260,h_200,c_crop'} // add eager transformations -> deafult = null
                 use_filename={false} // tell Cloudinary to use the original name of the uploaded
                 // file as its public ID -> default = true,
-
                 widgetStyles={{
                     palette: {
-                        window: '#737373',
-                        windowBorder: '#FFFFFF',
-                        tabIcon: '#FF9600',
-                        menuIcons: '#D7D7D8',
-                        textDark: '#DEDEDE',
-                        textLight: '#FFFFFF',
-                        link: '#0078FF',
-                        action: '#FF620C',
-                        inactiveTabIcon: '#B3B3B3',
-                        error: '#F44235',
-                        inProgress: '#0078FF',
-                        complete: '#20B832',
-                        sourceBg: '#909090'
+                        window: "#000000",
+                        windowBorder: "#262626",
+                        tabIcon: "#FFED48",
+                        menuIcons: "#5A616A",
+                        textDark: "#000000",
+                        textLight: "#FFFFFF",
+                        link: "#FFED48",
+                        action: "#FFED48",
+                        inactiveTabIcon: "#776311",
+                        error: "#F44235",
+                        inProgress: "#FFED48",
+                        complete: "#20B832",
+                        sourceBg: "#000000"
+                    },
+                    frame: {
+                        background: "rgb(68 68 68 / 50%)"
                     },
                     fonts: {
                         default: null,
-                        "'Fira Sans', sans-serif": {
-                            url: 'https://fonts.googleapis.com/css?family=Fira+Sans',
+                        "sans-serif": {
+                            url: null,
                             active: true
                         }
                     }
