@@ -45,7 +45,7 @@ export default function LargeNavBar(props?: {
                 </div>
                 <div className="m-4">
                     <Link href="/auth/signout">
-                        SIGNOUT
+                        SIGN OUT
                     </Link>
                 </div>
             </div>
