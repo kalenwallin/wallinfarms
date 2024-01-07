@@ -8,7 +8,7 @@ const metadata = {
     description: "Harvest reporting and management.",
 };
 
-const theme = "amoled"; // dark, darker, amoled
+const theme = "amoled";
 
 import { Cloudinary } from "@cloudinary/url-gen";
 
@@ -22,7 +22,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
+        <html suppressHydrationWarning lang="en">
             <body className={`${inter.className} bg-${theme}background`}>
                 {children}
             </body>

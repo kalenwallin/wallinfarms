@@ -53,6 +53,7 @@ export default function Page() {
                                 width: "30%",
                                 height: "auto",
                             }}
+                            priority={true}
                         />
                     </div>
                     <div className="w-3/4 md:w-1/2 lg:w-1/4">
@@ -72,15 +73,27 @@ export default function Page() {
                                             brand: '#FFED49',
                                             brandAccent: '#FACC14',
                                             brandButtonText: '#000000',
+                                            inputBackground: '#1e1e1e',
+                                            inputBorder: '#3e3e3e',
+                                            inputBorderHover: '#808080',
+                                            inputBorderFocus: '#808080',
+                                            inputText: '#ffffff',
+                                            inputLabelText: '#808080',
+                                            inputPlaceholder: '#a9a9a9',
+                                            messageBackground: '#0d5334',
+                                            messageBorder: '#2b805a',
+                                            messageText: '#85e0b7',
+                                            messageBackgroundDanger: '#370b0b',
+                                            messageBorderDanger: '#822025',
+                                            messageTextDanger: '#ff6369',
                                         },
                                     },
                                 },
                                 style: {
                                     button: { color: 'black' },
-                                    anchor: { color: '#FFED49' },
+
                                 },
                             }}
-                            theme="dark"
                             providers={[]}
                             magicLink={true}
                             view='magic_link'
