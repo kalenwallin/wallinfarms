@@ -15,8 +15,7 @@ export default function SmallNavBar(props?: {
     };
 
     const divStyle = {
-        opacity: '0.5',
-        backgroundColor: 'gray',
+        backgroundColor: '#161616',
     };
     return (
         <div className="fixed z-10 bg-black bottom-0 flex flex-row border-t border-neutral-800 w-full h-16 items-center justify-around">
