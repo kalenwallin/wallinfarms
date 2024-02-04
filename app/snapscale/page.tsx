@@ -38,6 +38,11 @@ export default async function SnapScale() {
                         </h1>
                         <div className="flex justify-center">
                             <Cloudinary />
+                            <button
+                                id="doneButton"
+                                className="hidden px-6 py-2 m-4 text-white bg-black border-2 rounded hover:shadow-xl hover:bg-white hover:text-black hover:border-black focus:shadow-400 focus:outline-none"
+                            >
+                            </button>
                         </div>
                     </div>
                 </div>

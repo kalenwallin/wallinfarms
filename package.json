@@ -11,7 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ant-design/cssinjs": "^1.17.0",
+    "@ant-design/cssinjs": "latest",
     "@ant-design/icons": "^5.2.6",
     "@ant-design/nextjs-registry": "^1.0.0",
     "@cloudinary/react": "^1.11.2",
@@ -38,7 +38,7 @@
     "eslint-config-next": "latest",
     "lucide-react": "^0.294.0",
     "multer": "^1.4.5-lts.1",
-    "next": "latest",
+    "next": "14.1",
     "postcss": "^8.4.29",
     "react": "latest",
     "react-cloudinary-upload-widget": "^2.0.0",
