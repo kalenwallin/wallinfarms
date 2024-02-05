@@ -1,14 +1,13 @@
 import base64
 import json
 import os
-from typing import List
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
 from google.cloud import vision
 from google.oauth2 import service_account
 from openpyxl import Workbook
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -27,6 +26,270 @@ from google.cloud import vision
 
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
+
+# API Classes
+
+class ScaleTicket:
+    def __init__(
+        self,
+        date,
+        ticket,
+        gross=0,
+        tare=0,
+        mo=0,
+        tw=0,
+        driver="",
+        truck="",
+        sale_location="",
+        field_number="",
+    ):
+        self.date = date
+        self.ticket = ticket
+        self.gross = float(gross.replace(",", "")) if isinstance(gross, str) else gross
+        self.tare = float(tare.replace(",", "")) if isinstance(tare, str) else tare
+        self.mo = float(mo) if isinstance(mo, str) else mo
+        self.tw = float(tw) if isinstance(tw, str) else tw
+        self.net = self.gross - self.tare
+        self.wetBu = self.net / 56
+        self.dryBu = (
+            (1 - ((self.mo - 15.5) * 0.012)) * self.net / 56
+            if mo > 15.5
+            else self.wetBu
+        )
+        self.driver = driver
+        self.truck = truck
+        self.sale_location = sale_location
+        self.field_number = field_number
+
+    def __str__(self):
+        return (
+            f"ScaleTicket({self.date}, {self.sale_location}, {self.ticket}, "
+            f"gross={self.gross}, tare={self.tare}, "
+            f"mo={self.mo}, tw={self.tw}, "
+            f"driver={self.driver}, truck={self.truck}, field_number={self.field_number})"
+        )
+
+
+def generate_random_date(year):
+    """
+    Generate a random date within a given year.
+    """
+    # Generate a date within given year
+    start_date = datetime.date(year, 1, 1)
+    end_date = datetime.date(year, 12, 31)
+
+    return start_date + (end_date - start_date) * random.random()
+
+
+def generate_random_name():
+    """
+    Generate a random name from a list of common first names.
+    """
+    # A list of some common first names. You can modify this to suit your needs.
+    names = [
+        "James",
+        "John",
+        "Robert",
+        "Mary",
+        "Patricia",
+        "Jennifer",
+        "Linda",
+        "Elizabeth",
+        "William",
+        "Richard",
+        "David",
+        "Susan",
+        "Joseph",
+        "Margaret",
+        "Charles",
+        "Thomas",
+        "Christopher",
+        "Daniel",
+        "Matthew",
+        "Sarah",
+        "Jessica",
+        "Emily",
+        "Michael",
+        "Jacob",
+        "Mohamed",
+        "Emma",
+        "Joshua",
+        "Amanda",
+        "Andrew",
+        "Brian",
+        "Brandon",
+    ]
+    return random.choice(names)
+
+
+def generate_random_feedlot_name():
+    """
+    Generates a random feedlot name by combining two typical feedlot naming elements.
+    """
+    name_elements = [
+        "Ridgefield",
+        "Prairie",
+        "Cattle Co.",
+        "Livestock",
+        "Ranchers",
+        "Farmers",
+        "Grains",
+        "Crops",
+        "Holdings",
+        "Valley",
+        "Hilltop",
+        "Green Pastures",
+        "Harvest",
+        "Angus",
+        "Farming",
+        "Acres",
+    ]
+
+    # Let's say a feedlot name consists of two elements.
+    feedlot_name = " ".join(random.sample(name_elements, 2))
+
+    return feedlot_name
+
+
+def generate_random_field_number():
+    """
+    Generates a random field number.
+    """
+    return random.randint(1, 99)
+
+
+def generate_mock_ticket():
+    """
+    Generate a mock ScaleTicket object.
+    """
+    return ScaleTicket(
+        date=generate_random_date(2023),
+        ticket=random.randint(1, 1000),
+        gross=random.randint(50000, 99999),
+        tare=random.randint(20000, 30000),
+        mo=random.uniform(30.0, 40.0),  # Generate a random float
+        tw=random.uniform(45.0, 55.0),  # Generate a random float
+        driver=generate_random_name(),
+        truck="T-" + str(random.randint(1, 20)),
+    )
+
+
+def generate_mock_tickets(num_tickets=2):
+    """
+    Generate a list of mock ScaleTicket objects based on the number of tickets provided.
+    """
+    return [generate_mock_ticket() for _ in range(num_tickets)]
+
+
+def process_images_as_scale_ticket(image_urls):
+    """Detects text as a ScaleTicket in an image."""
+    from google.cloud import vision_v1
+    from google.cloud.vision_v1 import types
+
+    if image_urls:
+        requests = []
+        tickets = []
+
+        for image_uri in image_urls:
+            image = types.Image()
+            image.source.image_uri = image_uri
+            requests.append(types.AnnotateImageRequest(image=image, features=[types.Feature(type=vision_v1.Feature.Type.TEXT_DETECTION)]))
+        
+        client = vision_v1.ImageAnnotatorClient(credentials=CREDENTIALS)
+        response = client.batch_annotate_images(requests=requests)
+
+        for idx, resp in enumerate(response.responses):
+            if resp.error.message:
+                raise Exception(
+                "{}\nFor more info on error messages, check: "
+                "https://cloud.google.com/apis/design/errors".format(resp.error.message)
+            )
+
+            date = "01/01/01"
+            ticket = "000000"
+            gross = "60,000"
+            tare = "20,000"
+            mo = 10.00
+            tw = 40.00
+            locations = ["Frenchman Valley Coop", "Baney", "Imperial Beef"]
+            sale_location = ""
+
+            # Regular expressions
+            date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
+            ticket_regex = re.compile(r"^[5][0][5]\d{3}")
+            gross_regex = re.compile(r"^[89]\d{1},\d{3}")
+            tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
+            mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
+            tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
+
+            texts = resp.text_annotations
+            for i, text in enumerate(texts):
+                sale_location = ""
+                
+                # find location
+                for location in locations:
+                    if location in text.description:
+                        print("Found location: " + location)
+                        sale_location = location
+                        break
+                if sale_location != "":
+                    break
+            
+            if sale_location == "Frenchman Valley Coop":
+                # Process as FVC
+                for i, text in enumerate(texts):
+                    print(f"{i}: " + text.description)
+                    # find date
+                    date_found = date_regex.search(text.description)
+                    if date_found:
+                        date_str = date_found.group()
+                        date = datetime.strptime(date_str, "%m/%d/%Y")
+
+                    # find ticket
+                    ticket_found = ticket_regex.search(text.description)
+                    if ticket_found:
+                        ticket = ticket_found.group()
+
+                    # find gross
+                    gross_found = gross_regex.search(text.description)
+                    if gross_found:
+                        gross = float(gross_found.group().replace(",", ""))
+
+                    # find tare
+                    tare_found = tare_regex.search(text.description)
+                    if tare_found:
+                        tare = float(tare_found.group().replace(",", ""))
+
+                    # find mo
+                    mo_found = mo_regex.search(text.description)
+                    if mo_found:
+                        mo = float(mo_found.group())
+
+                    # find tw
+                    tw_found = tw_regex.search(text.description)
+                    if tw_found:
+                        tw = float(tw_found.group())
+                    
+                scale_ticket = ScaleTicket(date, ticket, gross, tare, mo, tw, sale_location=sale_location)
+                print(scale_ticket)
+                tickets.append(scale_ticket)
+            elif location == "Baney":
+                # Process as Baney
+                pass
+            elif location == "Imperial Beef":
+                # Process as Imperial Beef
+                pass
+            else:
+                # Process as unknown location
+                pass
+
+        # TODO: save scale tickets to the supabase database
+        # if developing locally, save to dev table
+        # if running in production, save to prod table
+        return tickets
+    else:
+        raise Exception("Must provide image urls to process.")
+
 
 # API Excel Utils
 
@@ -306,255 +569,28 @@ if __name__ == "__main__":
         print("Error: No such function exists")
 
 
-# API Classes
-
-class ScaleTicket:
-    def __init__(
-        self,
-        date,
-        ticket,
-        gross=0,
-        tare=0,
-        mo=0,
-        tw=0,
-        driver="",
-        truck="",
-        sale_location="",
-        field_number="",
-    ):
-        self.date = date
-        self.ticket = ticket
-        self.gross = gross
-        self.tare = tare
-        self.mo = mo
-        self.tw = tw
-        self.net = gross - tare
-        self.wetBu = self.net / 56
-        self.dryBu = (
-            (1 - ((self.mo - 15.5) * 0.012)) * self.net / 56
-            if mo > 15.5
-            else self.wetBu
-        )
-        self.driver = driver
-        self.truck = truck
-        self.sale_location = sale_location
-        self.field_number = field_number
-
-    def __str__(self):
-        return (
-            f"ScaleTicket({self.date}, {self.sale_location}, {self.ticket}, "
-            f"gross={self.gross}, tare={self.tare}, "
-            f"mo={self.mo}, tw={self.tw}, "
-            f"driver={self.driver}, truck={self.truck}, field_number={self.field_number})"
-        )
-
-
-def generate_random_date(year):
-    """
-    Generate a random date within a given year.
-    """
-    # Generate a date within given year
-    start_date = datetime.date(year, 1, 1)
-    end_date = datetime.date(year, 12, 31)
-
-    return start_date + (end_date - start_date) * random.random()
-
-
-def generate_random_name():
-    """
-    Generate a random name from a list of common first names.
-    """
-    # A list of some common first names. You can modify this to suit your needs.
-    names = [
-        "James",
-        "John",
-        "Robert",
-        "Mary",
-        "Patricia",
-        "Jennifer",
-        "Linda",
-        "Elizabeth",
-        "William",
-        "Richard",
-        "David",
-        "Susan",
-        "Joseph",
-        "Margaret",
-        "Charles",
-        "Thomas",
-        "Christopher",
-        "Daniel",
-        "Matthew",
-        "Sarah",
-        "Jessica",
-        "Emily",
-        "Michael",
-        "Jacob",
-        "Mohamed",
-        "Emma",
-        "Joshua",
-        "Amanda",
-        "Andrew",
-        "Brian",
-        "Brandon",
-    ]
-    return random.choice(names)
-
-
-def generate_random_feedlot_name():
-    """
-    Generates a random feedlot name by combining two typical feedlot naming elements.
-    """
-    name_elements = [
-        "Ridgefield",
-        "Prairie",
-        "Cattle Co.",
-        "Livestock",
-        "Ranchers",
-        "Farmers",
-        "Grains",
-        "Crops",
-        "Holdings",
-        "Valley",
-        "Hilltop",
-        "Green Pastures",
-        "Harvest",
-        "Angus",
-        "Farming",
-        "Acres",
-    ]
-
-    # Let's say a feedlot name consists of two elements.
-    feedlot_name = " ".join(random.sample(name_elements, 2))
-
-    return feedlot_name
-
-
-def generate_random_field_number():
-    """
-    Generates a random field number.
-    """
-    return random.randint(1, 99)
-
-
-def generate_mock_ticket():
-    """
-    Generate a mock ScaleTicket object.
-    """
-    return ScaleTicket(
-        date=generate_random_date(2023),
-        ticket=random.randint(1, 1000),
-        gross=random.randint(50000, 99999),
-        tare=random.randint(20000, 30000),
-        mo=random.uniform(30.0, 40.0),  # Generate a random float
-        tw=random.uniform(45.0, 55.0),  # Generate a random float
-        driver=generate_random_name(),
-        truck="T-" + str(random.randint(1, 20)),
-    )
-
-
-def generate_mock_tickets(num_tickets=2):
-    """
-    Generate a list of mock ScaleTicket objects based on the number of tickets provided.
-    """
-    return [generate_mock_ticket() for _ in range(num_tickets)]
-
-
-def process_images_as_scale_ticket(image_urls=None):
-    """Detects text as a ScaleTicket in an image."""
-    if image_urls:
-        client = vision.ImageAnnotatorClient(credentials=CREDENTIALS)
-        response = client.text_detection()
-        texts = response.text_annotations
-
-        date = "01/01/01"
-        ticket = "000000"
-        gross = "60,000"
-        tare = "20,000"
-        mo = 10.00
-        tw = 40.00
-
-        # Regular expressions
-        date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
-        ticket_regex = re.compile(r"^[5][0][5]\d{3}")
-        gross_regex = re.compile(r"^[89]\d{1},\d{3}")
-        tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
-        mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
-        tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
-
-        for i, text in enumerate(texts):
-            # find date
-            date_found = date_regex.search(text.description)
-            if date_found:
-                date_str = date_found.group()
-                date = datetime.strptime(date_str, "%m/%d/%Y")
-
-            # find ticket
-            ticket_found = ticket_regex.search(text.description)
-            if ticket_found:
-                ticket = ticket_found.group()
-
-            # find gross
-            gross_found = gross_regex.search(text.description)
-            if gross_found:
-                gross = float(gross_found.group().replace(",", ""))
-
-            # find tare
-            tare_found = tare_regex.search(text.description)
-            if tare_found:
-                tare = float(tare_found.group().replace(",", ""))
-
-            # find mo
-            mo_found = mo_regex.search(text.description)
-            if mo_found:
-                mo = float(mo_found.group())
-
-            # find tw
-            tw_found = tw_regex.search(text.description)
-            if tw_found:
-                tw = float(tw_found.group())
-
-        if response.error.message:
-            raise Exception(
-                "{}\nFor more info on error messages, check: "
-                "https://cloud.google.com/apis/design/errors".format(response.error.message)
-            )
-        scale_ticket = ScaleTicket(date, ticket, gross, tare, mo, tw)
-        # TODO: save scale ticket to the database
-        print(scale_ticket)
-        return scale_ticket
-    else:
-        raise Exception("Must provide image urls to process.")
-
-
-
 # API routes
+        
+class Images(BaseModel):
+    urls: list[str]
 
 @app.post("/api/python/snapscale")
-async def snapscale(urls: List[str]):
-    print(urls)
-    return {"urls": urls}
-
-    tickets = []
-
-    # Iterate through uploaded images urls and process them in bulk
-    for url in urls:
-        try:
-            scale_ticket = process_images_as_scale_ticket(client, image_binary=contents)
-            tickets.append(scale_ticket)
-        except Exception as e:
-            raise HTTPException(
-                status_code=500, detail="Error processing image."
-            ) from e
+async def snapscale(images: Images):
+    # Process uploaded images urls in bulk
+    try:
+        tickets = process_images_as_scale_ticket(images.urls)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error processing image. {e}"
+        ) from e
+    return {"tickets": tickets}
 
     # Process the text as required and write to Excel
     # Create a workbook and select the active worksheet
     wb = Workbook()
     ws = wb.active
 
-    print("Tickets: ", tickets)
-
-    write_sheet(ws, tickets, upload.location, upload.field)
+    write_sheet(ws, tickets, None, None)
 
     # Save the workbook
     output_path = "public/output/output.xlsx"
@@ -566,12 +602,4 @@ async def snapscale(urls: List[str]):
         ) from e
 
     # Return the path to the generated Excel file
-    return {"fileUrl": output_path}
-
-
-@app.get("/download/{path:path}")
-async def download(path: str):
-    try:
-        return FileResponse(path)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Error serving file.") from e
+    return {"tickets": tickets}
