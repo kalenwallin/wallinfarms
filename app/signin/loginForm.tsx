@@ -59,7 +59,7 @@ export default function LoginForm() {
                                 priority={true}
                             />
                         </div>
-                        <div className="w-full">
+                        <div className="w-full sm:max-w-80">
                             <div className="SignIn text-center text-primary text-xl font-normal font-['Inter'] leading-none">Sign in</div>
                             <Auth
                                 supabaseClient={supabase}

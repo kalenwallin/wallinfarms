@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 import NavBar from "../components/nav/navBar";
 import Cloudinary from "../lib/cloudinary";
 import Image from "next/image";
-import React from "react";
 
 export default async function SnapScale() {
     const { data } = await readUserSession();
