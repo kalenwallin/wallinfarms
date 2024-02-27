@@ -1,43 +1,40 @@
 import base64
 import json
 import os
+import re
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from google.cloud import vision
 from google.oauth2 import service_account
 from openpyxl import Workbook
 from pydantic import BaseModel
+from datetime import datetime
+from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 
 app = FastAPI()
 
 # Load environment variables
 load_dotenv(dotenv_path=".env.local")
 GOOGLE_SERVICE_KEY = os.getenv("GOOGLE_SERVICE_KEY")
-CREDENTIAL_STR = base64.b64decode(GOOGLE_SERVICE_KEY)
-CREDENTIAL_DICT = json.loads(CREDENTIAL_STR)
-CREDENTIALS = service_account.Credentials.from_service_account_info(CREDENTIAL_DICT)
-
-import random
-import re
-from datetime import datetime
-
-from google.cloud import vision
-
-from openpyxl import Workbook
-from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
+if GOOGLE_SERVICE_KEY is not None:
+    CREDENTIAL_STR = base64.b64decode(GOOGLE_SERVICE_KEY)
+    CREDENTIAL_DICT = json.loads(CREDENTIAL_STR)
+    CREDENTIALS = service_account.Credentials.from_service_account_info(CREDENTIAL_DICT)
+else:
+    print("GOOGLE_SERVICE_KEY could not be loaded from the environment .env.local")
 
 # API Classes
+
 
 class ScaleTicket:
     def __init__(
         self,
         date,
         ticket,
-        gross=0,
-        tare=0,
-        mo=0,
-        tw=0,
+        gross=0.0,
+        tare=0.0,
+        mo=0.0,
+        tw=0.0,
         driver="",
         truck="",
         sale_location="",
@@ -70,117 +67,6 @@ class ScaleTicket:
         )
 
 
-def generate_random_date(year):
-    """
-    Generate a random date within a given year.
-    """
-    # Generate a date within given year
-    start_date = datetime.date(year, 1, 1)
-    end_date = datetime.date(year, 12, 31)
-
-    return start_date + (end_date - start_date) * random.random()
-
-
-def generate_random_name():
-    """
-    Generate a random name from a list of common first names.
-    """
-    # A list of some common first names. You can modify this to suit your needs.
-    names = [
-        "James",
-        "John",
-        "Robert",
-        "Mary",
-        "Patricia",
-        "Jennifer",
-        "Linda",
-        "Elizabeth",
-        "William",
-        "Richard",
-        "David",
-        "Susan",
-        "Joseph",
-        "Margaret",
-        "Charles",
-        "Thomas",
-        "Christopher",
-        "Daniel",
-        "Matthew",
-        "Sarah",
-        "Jessica",
-        "Emily",
-        "Michael",
-        "Jacob",
-        "Mohamed",
-        "Emma",
-        "Joshua",
-        "Amanda",
-        "Andrew",
-        "Brian",
-        "Brandon",
-    ]
-    return random.choice(names)
-
-
-def generate_random_feedlot_name():
-    """
-    Generates a random feedlot name by combining two typical feedlot naming elements.
-    """
-    name_elements = [
-        "Ridgefield",
-        "Prairie",
-        "Cattle Co.",
-        "Livestock",
-        "Ranchers",
-        "Farmers",
-        "Grains",
-        "Crops",
-        "Holdings",
-        "Valley",
-        "Hilltop",
-        "Green Pastures",
-        "Harvest",
-        "Angus",
-        "Farming",
-        "Acres",
-    ]
-
-    # Let's say a feedlot name consists of two elements.
-    feedlot_name = " ".join(random.sample(name_elements, 2))
-
-    return feedlot_name
-
-
-def generate_random_field_number():
-    """
-    Generates a random field number.
-    """
-    return random.randint(1, 99)
-
-
-def generate_mock_ticket():
-    """
-    Generate a mock ScaleTicket object.
-    """
-    return ScaleTicket(
-        date=generate_random_date(2023),
-        ticket=random.randint(1, 1000),
-        gross=random.randint(50000, 99999),
-        tare=random.randint(20000, 30000),
-        mo=random.uniform(30.0, 40.0),  # Generate a random float
-        tw=random.uniform(45.0, 55.0),  # Generate a random float
-        driver=generate_random_name(),
-        truck="T-" + str(random.randint(1, 20)),
-    )
-
-
-def generate_mock_tickets(num_tickets=2):
-    """
-    Generate a list of mock ScaleTicket objects based on the number of tickets provided.
-    """
-    return [generate_mock_ticket() for _ in range(num_tickets)]
-
-
 def process_images_as_scale_ticket(image_urls):
     """Detects text as a ScaleTicket in an image."""
     from google.cloud import vision_v1
@@ -193,105 +79,203 @@ def process_images_as_scale_ticket(image_urls):
         for image_uri in image_urls:
             image = types.Image()
             image.source.image_uri = image_uri
-            requests.append(types.AnnotateImageRequest(image=image, features=[types.Feature(type=vision_v1.Feature.Type.TEXT_DETECTION)]))
-        
-        client = vision_v1.ImageAnnotatorClient(credentials=CREDENTIALS)
-        response = client.batch_annotate_images(requests=requests)
-
-        for idx, resp in enumerate(response.responses):
-            if resp.error.message:
-                raise Exception(
-                "{}\nFor more info on error messages, check: "
-                "https://cloud.google.com/apis/design/errors".format(resp.error.message)
+            requests.append(
+                types.AnnotateImageRequest(
+                    image=image,
+                    features=[
+                        types.Feature(type=vision_v1.Feature.Type.TEXT_DETECTION)
+                    ],
+                )
             )
+        if CREDENTIALS is not None:
+            client = vision_v1.ImageAnnotatorClient(credentials=CREDENTIALS)
+            response = client.batch_annotate_images(requests=requests)
 
-            date = "01/01/01"
-            ticket = "000000"
-            gross = "60,000"
-            tare = "20,000"
-            mo = 10.00
-            tw = 40.00
-            locations = ["Frenchman Valley Coop", "Baney", "Imperial Beef"]
-            sale_location = ""
+            for idx, resp in enumerate(response.responses):
+                if resp.error.message:
+                    raise Exception(
+                        "{}\nFor more info on error messages, check: "
+                        "https://cloud.google.com/apis/design/errors".format(
+                            resp.error.message
+                        )
+                    )
 
-            # Regular expressions
-            date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
-            ticket_regex = re.compile(r"^[5][0][5]\d{3}")
-            gross_regex = re.compile(r"^[89]\d{1},\d{3}")
-            tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
-            mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
-            tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
-
-            texts = resp.text_annotations
-            for i, text in enumerate(texts):
+                date = "01/01/01"
+                ticket = "000000"
+                gross = "60,000"
+                tare = "20,000"
+                mo = 10.00
+                tw = 40.00
+                locations = ["Frenchman Valley Coop", "Baney", "Imperial Beef", "Oakley"]
                 sale_location = ""
-                
-                # find location
-                for location in locations:
-                    if location in text.description:
-                        print("Found location: " + location)
-                        sale_location = location
-                        break
-                if sale_location != "":
-                    break
-            
-            if sale_location == "Frenchman Valley Coop":
-                # Process as FVC
+
+                # Regular expressions
+                date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
+                fvc_imperial_ticket_regex = re.compile(r"^[5][0][5]\d{3}")
+                fvc_oakley_ticket_regex = re.compile(r"^[5][3][9]\d{3}")
+                fvc_trenton_ticket_regex = re.compile(r"^[4][0][1]\d{3}")
+                gross_regex = re.compile(r"^[89]\d{1},\d{3}")
+                tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
+                mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
+                tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
+
+                texts = resp.text_annotations
+                print(f"Texts: {texts}")
                 for i, text in enumerate(texts):
-                    print(f"{i}: " + text.description)
-                    # find date
-                    date_found = date_regex.search(text.description)
-                    if date_found:
-                        date_str = date_found.group()
-                        date = datetime.strptime(date_str, "%m/%d/%Y")
+                    sale_location = ""
 
-                    # find ticket
-                    ticket_found = ticket_regex.search(text.description)
-                    if ticket_found:
-                        ticket = ticket_found.group()
+                    # find location
+                    for location in locations:
+                        print(location + " vs. " + text.description)
+                        if location in text.description:
+                            print("Found location: " + location)
+                            sale_location = location
+                            break
+                    if sale_location != "":
+                        break
 
-                    # find gross
-                    gross_found = gross_regex.search(text.description)
-                    if gross_found:
-                        gross = float(gross_found.group().replace(",", ""))
+                if sale_location == "Frenchman Valley Coop":
+                    # Process as FVC Imperial
+                    for i, text in enumerate(texts):
+                        print(f"{i}: " + text.description)
+                        # find date
+                        date_found = date_regex.search(text.description)
+                        if date_found:
+                            date_str = date_found.group()
+                            date = datetime.strptime(date_str, "%m/%d/%Y")
 
-                    # find tare
-                    tare_found = tare_regex.search(text.description)
-                    if tare_found:
-                        tare = float(tare_found.group().replace(",", ""))
+                        # find ticket
+                        ticket_found = fvc_imperial_ticket_regex.search(text.description)
+                        if ticket_found:
+                            ticket = ticket_found.group()
 
-                    # find mo
-                    mo_found = mo_regex.search(text.description)
-                    if mo_found:
-                        mo = float(mo_found.group())
+                        # find gross
+                        gross_found = gross_regex.search(text.description)
+                        if gross_found:
+                            gross = float(gross_found.group().replace(",", ""))
 
-                    # find tw
-                    tw_found = tw_regex.search(text.description)
-                    if tw_found:
-                        tw = float(tw_found.group())
-                    
-                scale_ticket = ScaleTicket(date, ticket, gross, tare, mo, tw, sale_location=sale_location)
-                print(scale_ticket)
-                tickets.append(scale_ticket)
-            elif location == "Baney":
-                # Process as Baney
-                pass
-            elif location == "Imperial Beef":
-                # Process as Imperial Beef
-                pass
-            else:
-                # Process as unknown location
-                pass
+                        # find tare
+                        tare_found = tare_regex.search(text.description)
+                        if tare_found:
+                            tare = float(tare_found.group().replace(",", ""))
 
-        # TODO: save scale tickets to the supabase database
-        # if developing locally, save to dev table
-        # if running in production, save to prod table
-        return tickets
+                        # find mo
+                        mo_found = mo_regex.search(text.description)
+                        if mo_found:
+                            mo = float(mo_found.group())
+
+                        # find tw
+                        tw_found = tw_regex.search(text.description)
+                        if tw_found:
+                            tw = float(tw_found.group())
+
+                    scale_ticket = ScaleTicket(
+                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
+                    )
+                    print(scale_ticket)
+                    tickets.append(scale_ticket)
+                elif sale_location == "Baney":
+                    # Process as Baney
+                    pass
+                elif sale_location == "Imperial Beef":
+                    # Process as Imperial Beef
+                    pass
+                elif sale_location == "Oakley":
+                    # Process as Oakley
+                    for i, text in enumerate(texts):
+                        print(f"{i}: " + text.description)
+                        # find date
+                        date_found = date_regex.search(text.description)
+                        if date_found:
+                            date_str = date_found.group()
+                            date = datetime.strptime(date_str, "%m/%d/%Y")
+
+                        # find ticket
+                        ticket_found = fvc_oakley_ticket_regex.search(text.description)
+                        if ticket_found:
+                            ticket = ticket_found.group()
+
+                        # find gross
+                        gross_found = gross_regex.search(text.description)
+                        if gross_found:
+                            gross = float(gross_found.group().replace(",", ""))
+
+                        # find tare
+                        tare_found = tare_regex.search(text.description)
+                        if tare_found:
+                            tare = float(tare_found.group().replace(",", ""))
+
+                        # find mo
+                        mo_found = mo_regex.search(text.description)
+                        if mo_found:
+                            mo = float(mo_found.group())
+
+                        # find tw
+                        tw_found = tw_regex.search(text.description)
+                        if tw_found:
+                            tw = float(tw_found.group())
+
+                    scale_ticket = ScaleTicket(
+                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
+                    )
+                    print(scale_ticket)
+                    tickets.append(scale_ticket)
+                elif sale_location == "Trenton":
+                    # Process as Trenton
+                    for i, text in enumerate(texts):
+                        print(f"{i}: " + text.description)
+                        # find date
+                        date_found = date_regex.search(text.description)
+                        if date_found:
+                            date_str = date_found.group()
+                            date = datetime.strptime(date_str, "%m/%d/%Y")
+
+                        # find ticket
+                        ticket_found = fvc_trenton_ticket_regex.search(text.description)
+                        if ticket_found:
+                            ticket = ticket_found.group()
+
+                        # find gross
+                        gross_found = gross_regex.search(text.description)
+                        if gross_found:
+                            gross = float(gross_found.group().replace(",", ""))
+
+                        # find tare
+                        tare_found = tare_regex.search(text.description)
+                        if tare_found:
+                            tare = float(tare_found.group().replace(",", ""))
+
+                        # find mo
+                        mo_found = mo_regex.search(text.description)
+                        if mo_found:
+                            mo = float(mo_found.group())
+
+                        # find tw
+                        tw_found = tw_regex.search(text.description)
+                        if tw_found:
+                            tw = float(tw_found.group())
+
+                    scale_ticket = ScaleTicket(
+                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
+                    )
+                    print(scale_ticket)
+                    tickets.append(scale_ticket)
+                else:
+                    # Process as unknown location
+                    pass
+
+            # TODO: save scale tickets to the supabase database
+            # if developing locally, save to dev table
+            # if running in production, save to prod table
+            return tickets
+        else:
+            raise Exception("Must provide Google Cloud credentials.")
     else:
         raise Exception("Must provide image urls to process.")
 
 
 # API Excel Utils
+
 
 def write_header(worksheet, location="", field=""):
     """
@@ -534,45 +518,12 @@ def write_sheet(worksheet, tickets, location="", field=""):
     worksheet.page_setup.orientation = "landscape"
 
 
-# Testing
-if __name__ == "__main__":
-    import sys
-
-    if sys.argv[1] == "write_header":
-        workbook = Workbook()
-        worksheet = workbook.active
-
-        # Generate mock data
-        random_feedlot = generate_random_feedlot_name()
-        random_field_number = generate_random_field_number()
-
-        # Write template header with mock data
-        write_header(worksheet, random_feedlot, random_field_number)
-
-        workbook.save("output/test_write_header.xlsx")
-    elif sys.argv[1] == "write_sheet":
-        workbook = Workbook()
-        worksheet = workbook.active
-
-        # Generate mock data
-        random_feedlot = generate_random_feedlot_name()
-        random_field_number = generate_random_field_number()
-        num_tickets = 10
-        tickets = generate_mock_tickets(num_tickets)
-
-        # Write mock data
-        write_sheet(worksheet, tickets, random_feedlot, random_field_number)
-
-        # Save the workbook
-        workbook.save("output/test_write_sheet_2.xlsx")
-    else:
-        print("Error: No such function exists")
-
-
 # API routes
-        
+
+
 class Images(BaseModel):
     urls: list[str]
+
 
 @app.post("/api/python/snapscale")
 async def snapscale(images: Images):
@@ -603,3 +554,20 @@ async def snapscale(images: Images):
 
     # Return the path to the generated Excel file
     return {"tickets": tickets}
+
+
+# Error Logging
+import logging
+from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+    logging.error(f"{request}: {exc_str}")
+    content = {"status_code": 10422, "message": exc_str, "data": None}
+    return JSONResponse(
+        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
