@@ -35,6 +35,7 @@ yarn-error.log*
 
 # pycache
 *.pyc
+**/__pycache__*
 
 # local testing
 /public/documents/
@@ -42,6 +43,7 @@ yarn-error.log*
 
 # python venv
 env
+.venv
 
 # vscode
 .vscode
