@@ -33,7 +33,20 @@ git clone https://github.com/kalenwallin/wallinfarms
 
 ## Getting Started
 
-First, install the dependencies:
+First, create and activate a virtual environment:
+
+```bash
+python3.9 -m venv .venv
+python3.9 .venv/bin/activate
+```
+
+Then install the Python dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Also install the node dependencies:
 
 ```bash
 npm install
