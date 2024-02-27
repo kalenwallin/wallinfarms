@@ -11,14 +11,20 @@ export default async function Home() {
         return redirect('/signin')
     }
     return (
-        <main className="relative h-screen" style={{ height: "85vh" }}>
+        <>
             <NavBar current_page="home" />
-            <ComingSoon
-                image_path={HOME_PROPS.IMAGE_PATH}
-                line_one={HOME_PROPS.LINE_ONE}
-                line_two={HOME_PROPS.LINE_TWO}
-            />
-            <div className="h-16"></div>
-        </main>
+            <main className="relative h-screen" style={{ height: "85vh" }}>
+                <div className="h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-small-white/[0.2] bg-grid-small-black/[0.2] relative flex items-center justify-center">
+                    {/* Radial gradient for the container to give a faded look */}
+                    <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+                    <ComingSoon
+                        image_path={HOME_PROPS.IMAGE_PATH}
+                        line_one={HOME_PROPS.LINE_ONE}
+                        line_two={HOME_PROPS.LINE_TWO}
+                    />
+                </div>
+                <div className="h-16"></div>
+            </main>
+        </>
     );
 }
