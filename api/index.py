@@ -11,6 +11,8 @@ from pydantic import BaseModel
 from datetime import datetime
 from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 
+from supabase import create_client, Client
+
 app = FastAPI()
 
 # Load environment variables
@@ -23,9 +25,18 @@ if GOOGLE_SERVICE_KEY is not None:
 else:
     print("GOOGLE_SERVICE_KEY could not be loaded from the environment .env.local")
 
+url: str = os.getenv("SUPABASE_URL")
+key: str = os.getenv("SUPABASE_ANON_KEY")
+supabase: Client = create_client(url, key)
+
+debug: str = os.getenv("DEBUG")
+scale_ticket_table_name: str = "snapscale_scaleticket"
+if debug == "TRUE":
+    print("Debug mode enabled")
+    scale_ticket_table_name = "snapscale_scaleticketdev"
+
+
 # API Classes
-
-
 class ScaleTicket:
     def __init__(
         self,
@@ -67,6 +78,115 @@ class ScaleTicket:
         )
 
 
+# Database functions
+def upsert_scale_ticket(scale_ticket: ScaleTicket, tickets: list[ScaleTicket]):
+    """
+    Updates a scale ticket if its already in the 'snapscale_scaleticket' table by ticket number.
+    Otherwise, inserts the scale ticket into the 'snapscale_scaleticket' table.
+    """
+    data, count = (
+        supabase.table(scale_ticket_table_name)
+        .select("*")
+        .eq("ticket", scale_ticket.ticket)
+        .maybe_single()
+        .execute()
+    )
+    print(count)
+    print(data)
+    if count == 0:
+        tickets.append(scale_ticket)
+    else:
+        data.date = scale_ticket.date
+        data.gross = scale_ticket.gross
+        data.tare = scale_ticket.tare
+        data.mo = scale_ticket.mo
+        data.tw = scale_ticket.tw
+        data.net = scale_ticket.net
+        data.wetBu = scale_ticket.wetBu
+        data.dryBu = scale_ticket.dryBu
+        data.driver = scale_ticket.driver
+        data.truck = scale_ticket.truck
+        data.sale_location = scale_ticket.sale_location
+        data.field_number = scale_ticket.field_number
+        supabase.table(scale_ticket_table_name).update(data).eq(
+            "ticket", scale_ticket.ticket
+        ).execute()
+
+
+# API functions
+def perform_ocr(
+    texts,
+    tickets,
+    location,
+    ticket_regex,
+    date_regex=None,
+    gross_regex=None,
+    tare_regex=None,
+    mo_regex=None,
+    tw_regex=None,
+):
+    """
+    Perform Optical Character Recognition (OCR) on texts to extract specific information such as date,
+    ticket number, gross weight, tare weight, moisture content, and total weight. It utilizes various
+    regular expressions to extract the required data from the text descriptions.
+
+    Regex patterns can be customized if needed.
+    """
+
+    date = "01/01/01"
+    ticket = "000000"
+    gross = "60,000"
+    tare = "20,000"
+    mo = 10.00
+    tw = 40.00
+
+    # Default Regular expressions
+    date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
+    gross_regex = re.compile(r"^[89]\d{1},\d{3}")
+    tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
+    mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
+    tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
+
+    for i, text in enumerate(texts):
+        # print(f"{i}: " + text.description)
+        # find date
+        date_found = date_regex.search(text.description)
+        if date_found:
+            date_str = date_found.group()
+            date = datetime.strptime(date_str, "%m/%d/%Y")
+
+        # find ticket
+        ticket_found = ticket_regex.search(text.description)
+        if ticket_found:
+            ticket = ticket_found.group()
+
+        # find gross
+        gross_found = gross_regex.search(text.description)
+        if gross_found:
+            gross = float(gross_found.group().replace(",", ""))
+
+        # find tare
+        tare_found = tare_regex.search(text.description)
+        if tare_found:
+            tare = float(tare_found.group().replace(",", ""))
+
+        # find mo
+        mo_found = mo_regex.search(text.description)
+        if mo_found:
+            mo = float(mo_found.group())
+
+        # find tw
+        tw_found = tw_regex.search(text.description)
+        if tw_found:
+            tw = float(tw_found.group())
+
+    scale_ticket = ScaleTicket(
+        date, ticket, gross, tare, mo, tw, sale_location=location
+    )
+    print(scale_ticket)
+    upsert_scale_ticket(scale_ticket, tickets)
+
+
 def process_images_as_scale_ticket(image_urls):
     """Detects text as a ScaleTicket in an image."""
     from google.cloud import vision_v1
@@ -91,8 +211,11 @@ def process_images_as_scale_ticket(image_urls):
             client = vision_v1.ImageAnnotatorClient(credentials=CREDENTIALS)
             response = client.batch_annotate_images(requests=requests)
 
-            for idx, resp in enumerate(response.responses):
+            if response is None:
+                raise Exception(f"Batch response is None {response}")
+            for i, resp in enumerate(response.responses):
                 if resp.error.message:
+                    print(resp.error)
                     raise Exception(
                         "{}\nFor more info on error messages, check: "
                         "https://cloud.google.com/apis/design/errors".format(
@@ -100,27 +223,19 @@ def process_images_as_scale_ticket(image_urls):
                         )
                     )
 
-                date = "01/01/01"
-                ticket = "000000"
-                gross = "60,000"
-                tare = "20,000"
-                mo = 10.00
-                tw = 40.00
-                locations = ["Frenchman Valley Coop", "Baney", "Imperial Beef", "Oakley"]
+                locations = [
+                    "Frenchman Valley Coop",
+                    "Baney",
+                    "Imperial Beef",
+                ]
+                fvc_locations = [
+                    "Oakley",
+                    "Trenton",
+                    "Imperial",
+                ]
                 sale_location = ""
 
-                # Regular expressions
-                date_regex = re.compile(r"\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}")
-                fvc_imperial_ticket_regex = re.compile(r"^[5][0][5]\d{3}")
-                fvc_oakley_ticket_regex = re.compile(r"^[5][3][9]\d{3}")
-                fvc_trenton_ticket_regex = re.compile(r"^[4][0][1]\d{3}")
-                gross_regex = re.compile(r"^[89]\d{1},\d{3}")
-                tare_regex = re.compile(r"^[2]\d{1}\,\d{3}")
-                mo_regex = re.compile(r"^[1]\d{1}\.\d{2}")
-                tw_regex = re.compile(r"^[5]\d{1}\.\d{2}")
-
                 texts = resp.text_annotations
-                print(f"Texts: {texts}")
                 for i, text in enumerate(texts):
                     sale_location = ""
 
@@ -135,138 +250,71 @@ def process_images_as_scale_ticket(image_urls):
                         break
 
                 if sale_location == "Frenchman Valley Coop":
-                    # Process as FVC Imperial
+                    # find fvc location
                     for i, text in enumerate(texts):
-                        print(f"{i}: " + text.description)
-                        # find date
-                        date_found = date_regex.search(text.description)
-                        if date_found:
-                            date_str = date_found.group()
-                            date = datetime.strptime(date_str, "%m/%d/%Y")
+                        sale_location = ""
+                        for location in fvc_locations:
+                            print(location + " vs. " + text.description)
+                            if location in text.description:
+                                print("Found fvc location: " + location)
+                                sale_location = location
+                                break
+                        if sale_location != "":
+                            break
 
-                        # find ticket
-                        ticket_found = fvc_imperial_ticket_regex.search(text.description)
-                        if ticket_found:
-                            ticket = ticket_found.group()
-
-                        # find gross
-                        gross_found = gross_regex.search(text.description)
-                        if gross_found:
-                            gross = float(gross_found.group().replace(",", ""))
-
-                        # find tare
-                        tare_found = tare_regex.search(text.description)
-                        if tare_found:
-                            tare = float(tare_found.group().replace(",", ""))
-
-                        # find mo
-                        mo_found = mo_regex.search(text.description)
-                        if mo_found:
-                            mo = float(mo_found.group())
-
-                        # find tw
-                        tw_found = tw_regex.search(text.description)
-                        if tw_found:
-                            tw = float(tw_found.group())
-
-                    scale_ticket = ScaleTicket(
-                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
-                    )
-                    print(scale_ticket)
-                    tickets.append(scale_ticket)
+                    if sale_location == "Imperial":
+                        # Process as FVC Imperial
+                        perform_ocr(
+                            texts,
+                            tickets,
+                            location="FVC Imperial",
+                            ticket_regex=re.compile(r"^[5][0][5]\d{3}"),
+                        )
+                    elif sale_location == "Oakley":
+                        # Process as FVC Oakley
+                        perform_ocr(
+                            texts,
+                            tickets,
+                            location="Western Plains Energy",
+                            ticket_regex=re.compile(r"^[5][3][9]\d{3}"),
+                        )
+                    elif sale_location == "Trenton":
+                        # Process as FVC Trenton
+                        perform_ocr(
+                            texts,
+                            tickets,
+                            location="Trenton Agri Products",
+                            ticket_regex=re.compile(r"^[4][0][1]\d{4}"),
+                        )
                 elif sale_location == "Baney":
                     # Process as Baney
-                    pass
+                    perform_ocr(
+                        texts,
+                        tickets,
+                        location="Baney",
+                        ticket_regex=re.compile(r"^[0]\d{3}"),
+                    )
                 elif sale_location == "Imperial Beef":
                     # Process as Imperial Beef
-                    pass
-                elif sale_location == "Oakley":
-                    # Process as Oakley
-                    for i, text in enumerate(texts):
-                        print(f"{i}: " + text.description)
-                        # find date
-                        date_found = date_regex.search(text.description)
-                        if date_found:
-                            date_str = date_found.group()
-                            date = datetime.strptime(date_str, "%m/%d/%Y")
-
-                        # find ticket
-                        ticket_found = fvc_oakley_ticket_regex.search(text.description)
-                        if ticket_found:
-                            ticket = ticket_found.group()
-
-                        # find gross
-                        gross_found = gross_regex.search(text.description)
-                        if gross_found:
-                            gross = float(gross_found.group().replace(",", ""))
-
-                        # find tare
-                        tare_found = tare_regex.search(text.description)
-                        if tare_found:
-                            tare = float(tare_found.group().replace(",", ""))
-
-                        # find mo
-                        mo_found = mo_regex.search(text.description)
-                        if mo_found:
-                            mo = float(mo_found.group())
-
-                        # find tw
-                        tw_found = tw_regex.search(text.description)
-                        if tw_found:
-                            tw = float(tw_found.group())
-
-                    scale_ticket = ScaleTicket(
-                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
+                    perform_ocr(
+                        texts,
+                        tickets,
+                        location="Imperial Beef",
+                        ticket_regex=re.compile(r"^[4][0][1]\d{3}"),
                     )
-                    print(scale_ticket)
-                    tickets.append(scale_ticket)
-                elif sale_location == "Trenton":
-                    # Process as Trenton
-                    for i, text in enumerate(texts):
-                        print(f"{i}: " + text.description)
-                        # find date
-                        date_found = date_regex.search(text.description)
-                        if date_found:
-                            date_str = date_found.group()
-                            date = datetime.strptime(date_str, "%m/%d/%Y")
-
-                        # find ticket
-                        ticket_found = fvc_trenton_ticket_regex.search(text.description)
-                        if ticket_found:
-                            ticket = ticket_found.group()
-
-                        # find gross
-                        gross_found = gross_regex.search(text.description)
-                        if gross_found:
-                            gross = float(gross_found.group().replace(",", ""))
-
-                        # find tare
-                        tare_found = tare_regex.search(text.description)
-                        if tare_found:
-                            tare = float(tare_found.group().replace(",", ""))
-
-                        # find mo
-                        mo_found = mo_regex.search(text.description)
-                        if mo_found:
-                            mo = float(mo_found.group())
-
-                        # find tw
-                        tw_found = tw_regex.search(text.description)
-                        if tw_found:
-                            tw = float(tw_found.group())
-
-                    scale_ticket = ScaleTicket(
-                        date, ticket, gross, tare, mo, tw, sale_location=sale_location
-                    )
-                    print(scale_ticket)
-                    tickets.append(scale_ticket)
                 else:
                     # Process as unknown location
-                    pass
+                    perform_ocr(
+                        texts,
+                        tickets,
+                        location="",
+                        ticket_regex=re.compile(r"\d+"),
+                    )
 
             # TODO: save scale tickets to the supabase database
-            # if developing locally, save to dev table
-            # if running in production, save to prod table
+            data, count = (
+                supabase.table(scale_ticket_table_name).insert(tickets).execute()
+            )
             return tickets
         else:
             raise Exception("Must provide Google Cloud credentials.")
@@ -275,8 +323,6 @@ def process_images_as_scale_ticket(image_urls):
 
 
 # API Excel Utils
-
-
 def write_header(worksheet, location="", field=""):
     """
     Writes the header section of the workbook including contact info, location, and headers.
@@ -519,8 +565,6 @@ def write_sheet(worksheet, tickets, location="", field=""):
 
 
 # API routes
-
-
 class Images(BaseModel):
     urls: list[str]
 

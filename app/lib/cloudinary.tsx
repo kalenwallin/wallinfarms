@@ -7,7 +7,7 @@ export default function Cloudinary() {
   // Function to be called when the user is done uploading
   function userDoneUploading() {
     // Step 1: User indicates completion (e.g., by clicking a "Done" button)
-    // Step 2: Send the URLs to your API
+    // Step 2: Send the URLs to the API
     fetch("/api/python/snapscale", {
       method: "POST",
       headers: {

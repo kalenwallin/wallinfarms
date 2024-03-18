@@ -1,9 +1,9 @@
 [tool.pyright]
-include = ["api"],
-exclude = ["api/__pycache__"],
-pythonVersion = "3.9",
-reportMissingImports = false,
+include = ["api"]
+exclude = ["api/__pycache__"]
+pythonVersion = "3.9"
+reportMissingImports = false
 
 [tool.ruff]
-exclude = ["pyproject.toml"],
+exclude = ["pyproject.toml"]
 target-version = "py39"
