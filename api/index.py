@@ -77,40 +77,68 @@ class ScaleTicket:
             f"driver={self.driver}, truck={self.truck}, field_number={self.field_number})"
         )
 
+    def __dict__(self):
+        return {
+            "date": self.date.strftime("%Y-%m-%d"),
+            "ticket": self.ticket,
+            "gross": self.gross,
+            "tare": self.tare,
+            "mo": self.mo,
+            "tw": self.tw,
+            "net": self.net,
+            "wetBu": self.wetBu,
+            "dryBu": self.dryBu,
+            "driver": self.driver,
+            "truck": self.truck,
+            "sale_location": self.sale_location,
+            "field_number": self.field_number,
+        }
 
 # Database functions
 def upsert_scale_ticket(scale_ticket: ScaleTicket, tickets: list[ScaleTicket]):
     """
-    Updates a scale ticket if its already in the 'snapscale_scaleticket' table by ticket number.
-    Otherwise, inserts the scale ticket into the 'snapscale_scaleticket' table.
+    Updates a scale ticket's database record if its ticket number and location match an existing record
+    Otherwise, appends the scale ticket into the tickets list to be inserted later.
     """
     data, count = (
         supabase.table(scale_ticket_table_name)
         .select("*")
         .eq("ticket", scale_ticket.ticket)
-        .maybe_single()
         .execute()
     )
-    print(count)
-    print(data)
-    if count == 0:
+    print("Number of records with same ticket number", len(data[1]))
+    if len(data[1]) == 0:
+        # If there is no record with the same ticket number, then append the record to tickets to be inserted later.
+        print("Appending new ticket number record to tickets to be inserted later")
         tickets.append(scale_ticket)
     else:
-        data.date = scale_ticket.date
-        data.gross = scale_ticket.gross
-        data.tare = scale_ticket.tare
-        data.mo = scale_ticket.mo
-        data.tw = scale_ticket.tw
-        data.net = scale_ticket.net
-        data.wetBu = scale_ticket.wetBu
-        data.dryBu = scale_ticket.dryBu
-        data.driver = scale_ticket.driver
-        data.truck = scale_ticket.truck
-        data.sale_location = scale_ticket.sale_location
-        data.field_number = scale_ticket.field_number
-        supabase.table(scale_ticket_table_name).update(data).eq(
-            "ticket", scale_ticket.ticket
-        ).execute()
+        for record in data[1]:
+            print("Existing record", record)
+            # If the sale location is different then append the record to tickets to be inserted later.
+            if record['sale_location'] != scale_ticket.sale_location:
+                print("Appending different sale location record with same ticket number to tickets to be inserted later")
+                tickets.append(scale_ticket)
+            else:
+                # If the ticket number and sale location are the same, then update the record.
+                print("Updating existing record")
+                record['date'] = scale_ticket.date.strftime("%Y-%m-%d")
+                record['gross'] = scale_ticket.gross
+                record['tare'] = scale_ticket.tare
+                record['mo'] = scale_ticket.mo
+                record['tw'] = scale_ticket.tw
+                record['net'] = scale_ticket.net
+                record['wetBu'] = scale_ticket.wetBu
+                record['dryBu'] = scale_ticket.dryBu
+                record['driver'] = scale_ticket.driver
+                record['truck'] = scale_ticket.truck
+                record['sale_location'] = scale_ticket.sale_location
+                record['field_number'] = scale_ticket.field_number
+                record['status'] = "ACTIVE"
+                print("Updated record", record)
+                response = supabase.table(scale_ticket_table_name).update(record).eq(
+                    "ticket", scale_ticket.ticket
+                ).execute()
+                print("Update existing record response", response)
 
 
 # API functions
@@ -241,7 +269,7 @@ def process_images_as_scale_ticket(image_urls):
 
                     # find location
                     for location in locations:
-                        print(location + " vs. " + text.description)
+                        print("Checking location: " + location)
                         if location in text.description:
                             print("Found location: " + location)
                             sale_location = location
@@ -254,7 +282,7 @@ def process_images_as_scale_ticket(image_urls):
                     for i, text in enumerate(texts):
                         sale_location = ""
                         for location in fvc_locations:
-                            print(location + " vs. " + text.description)
+                            print("Checking fvc location: " + location)
                             if location in text.description:
                                 print("Found fvc location: " + location)
                                 sale_location = location
@@ -312,10 +340,11 @@ def process_images_as_scale_ticket(image_urls):
                     )
 
             # TODO: save scale tickets to the supabase database
-            data, count = (
-                supabase.table(scale_ticket_table_name).insert(tickets).execute()
-            )
-            return tickets
+            print("Serializing tickets into json")
+            dict_tickets = [t.__dict__() for t in tickets]
+            print("Inserting tickets into the database: ",  dict_tickets)
+            response = supabase.table(scale_ticket_table_name).insert(dict_tickets).execute()
+            return dict_tickets
         else:
             raise Exception("Must provide Google Cloud credentials.")
     else:
